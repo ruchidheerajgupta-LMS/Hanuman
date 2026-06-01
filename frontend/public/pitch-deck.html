@@ -1,0 +1,1872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrainTrack — Modern RTO Management Platform</title>
+<style>
+  :root {
+    --brand: #0F766E;
+    --brand2: #0D9488;
+    --accent: #F59E0B;
+    --dark: #0F172A;
+    --mid: #1E293B;
+    --muted: #64748B;
+    --light: #F8FAFC;
+    --white: #FFFFFF;
+    --green: #10B981;
+    --red: #EF4444;
+    --blue: #3B82F6;
+    --purple: #8B5CF6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #000;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  /* ── SLIDE ── */
+  .slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── NAVIGATION ── */
+  .nav {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 10px 20px;
+    border-radius: 50px;
+    z-index: 1000;
+  }
+
+  .nav button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+
+  .nav button:hover { background: rgba(255,255,255,0.1); }
+  .nav button:disabled { opacity: 0.3; cursor: default; }
+
+  .slide-counter {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 500;
+    min-width: 50px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .dot.active {
+    background: var(--accent);
+    width: 18px;
+    border-radius: 3px;
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 12px;
+  }
+
+  h1 { font-size: clamp(36px,5vw,60px); font-weight: 800; line-height: 1.1; }
+  h2 { font-size: clamp(28px,4vw,46px); font-weight: 800; line-height: 1.15; }
+  h3 { font-size: clamp(20px,2.5vw,28px); font-weight: 700; }
+  p  { font-size: clamp(14px,1.5vw,18px); line-height: 1.65; }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #5EEAD4, #A7F3D0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .amber-text {
+    background: linear-gradient(135deg, #FCD34D, #F59E0B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── COMMON LAYOUT ── */
+  .full-bg { width: 100%; height: 100%; position: relative; overflow: hidden; }
+  .content-center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%; padding: 40px 40px 210px; }
+  .content-left { display: flex; flex-direction: column; justify-content: center; height: 100%; padding: 60px 80px 200px; max-width: 55%; }
+  .split { display: flex; height: 100%; }
+  .split-left { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 60px 60px 200px 80px; }
+  .split-right { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 60px 80px 200px 60px; }
+
+  /* ── DECORATIVE ELEMENTS ── */
+  .bg-dots {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(80px);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .tag-green { background: rgba(16,185,129,0.15); color: #34D399; border: 1px solid rgba(16,185,129,0.25); }
+  .tag-amber { background: rgba(245,158,11,0.15); color: #FCD34D; border: 1px solid rgba(245,158,11,0.25); }
+  .tag-blue  { background: rgba(59,130,246,0.15); color: #93C5FD; border: 1px solid rgba(59,130,246,0.25); }
+  .tag-teal  { background: rgba(15,118,110,0.2);  color: #5EEAD4; border: 1px solid rgba(20,184,166,0.3); }
+
+  /* ── MOCK UI ELEMENTS ── */
+  .mock-window {
+    background: #1E293B;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+  }
+
+  .mock-titlebar {
+    background: #0F172A;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .mock-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .mock-dot.r { background: #EF4444; }
+  .mock-dot.y { background: #F59E0B; }
+  .mock-dot.g { background: #10B981; }
+  .mock-title { font-size: 12px; color: rgba(255,255,255,0.4); margin-left: 4px; }
+
+  .mock-body { padding: 16px; }
+
+  /* ── CARD ── */
+  .card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  /* ── STAT BOX ── */
+  .stat-box {
+    text-align: center;
+    padding: 24px 20px;
+  }
+
+  .stat-num {
+    font-size: clamp(32px,4vw,52px);
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── FEATURE ROW ── */
+  .feat-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .feat-row:last-child { border-bottom: none; }
+
+  .feat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(15,118,110,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── PILL ── */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .pill-c  { background: #D1FAE5; color: #065F46; }
+  .pill-p  { background: #FEF3C7; color: #92400E; }
+  .pill-n  { background: #FEE2E2; color: #991B1B; }
+  .pill-d  { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+
+  /* ── PROGRESS BAR ── */
+  .pbar-wrap { height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+  .pbar-fill  { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--brand), var(--brand2)); }
+
+  /* ── TABLE ── */
+  .mock-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .mock-table th { padding: 8px 10px; text-align: left; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4); border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .mock-table td { padding: 9px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); }
+  .mock-table tr:last-child td { border-bottom: none; }
+
+  /* ── SLIDE 1: COVER ── */
+  #s1 { background: linear-gradient(135deg, #0A1628 0%, #0D2B3E 50%, #0A2818 100%); color: #fff; }
+
+  /* ── SLIDE 2: PROBLEM ── */
+  #s2 { background: var(--dark); color: #fff; }
+
+  /* ── SLIDE 3: OVERVIEW ── */
+  #s3 { background: linear-gradient(160deg, #0A1628 0%, #0F2D2A 100%); color: #fff; }
+
+  /* ── SLIDE 4: STUDENT MANAGEMENT ── */
+  #s4 { background: var(--dark); color: #fff; }
+
+  /* ── SLIDE 5: ASSESSMENT BUILDER ── */
+  #s5 { background: linear-gradient(160deg, #0A1628 0%, #1a1040 100%); color: #fff; }
+
+  /* ── SLIDE 6: ATTENDANCE ── */
+  #s6 { background: var(--dark); color: #fff; }
+
+  /* ── SLIDE 7: ANALYTICS + AVETMISS ── */
+  #s7 { background: linear-gradient(160deg, #0A1628 0%, #0F2D2A 100%); color: #fff; }
+
+  /* ── SLIDE 8: RPL ── */
+  #s8 { background: var(--dark); color: #fff; }
+
+  /* ── SLIDE 9: MULTI-TENANT ── */
+  #s9 { background: linear-gradient(160deg, #0A1628 0%, #1a1040 100%); color: #fff; }
+
+  /* ── SLIDE 10: PRICING ── */
+  #s10 { background: var(--dark); color: #fff; }
+
+  /* ── SLIDE 11: MIGRATION ── */
+  #s11 { background: linear-gradient(160deg, #0A1628 0%, #0F2D2A 100%); color: #fff; }
+
+  /* ── SLIDE 12: CTA ── */
+  #s12 { background: linear-gradient(135deg, #0F766E 0%, #0D9488 40%, #0A7F6A 100%); color: #fff; }
+
+  /* SVG icons */
+  svg.icon { width: 1em; height: 1em; vertical-align: middle; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 1 — COVER
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide active" id="s1">
+    <div class="full-bg">
+      <div class="bg-dots"></div>
+      <!-- Glows -->
+      <div class="bg-glow" style="width:600px;height:600px;background:rgba(15,118,110,0.25);top:-150px;left:-150px;"></div>
+      <div class="bg-glow" style="width:400px;height:400px;background:rgba(245,158,11,0.12);bottom:-80px;right:-80px;"></div>
+
+      <div class="content-center">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:32px;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#0F766E,#0D9488);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;">🚆</div>
+          <span style="font-size:24px;font-weight:800;letter-spacing:-0.5px;">TrainTrack</span>
+        </div>
+
+        <div class="tag tag-teal" style="margin-bottom:24px;">
+          <span>Built for Australian RTOs</span>
+        </div>
+
+        <h1 style="max-width:820px;margin-bottom:24px;">
+          The Modern LMS That Keeps Your<br>
+          <span class="gradient-text">RTO Compliant &amp; Competitive</span>
+        </h1>
+
+        <p style="max-width:560px;opacity:0.7;margin-bottom:48px;">
+          Full-featured training management — from student enrolment to AVETMISS export — purpose-built for Australian Registered Training Organisations.
+        </p>
+
+        <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
+          <div class="stat-box">
+            <div class="stat-num amber-text">100%</div>
+            <div class="stat-label">AVETMISS Compliant</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.1);"></div>
+          <div class="stat-box">
+            <div class="stat-num" style="color:#5EEAD4;">Multi</div>
+            <div class="stat-label">Tenant Architecture</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.1);"></div>
+          <div class="stat-box">
+            <div class="stat-num amber-text">AU</div>
+            <div class="stat-label">Data Sovereignty</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.1);"></div>
+          <div class="stat-box">
+            <div class="stat-num" style="color:#5EEAD4;">8</div>
+            <div class="stat-label">Integrated Services</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div style="position:absolute;bottom:68px;left:0;right:0;padding:10px 48px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);">
+        <span style="font-size:12px;opacity:0.4;">CONFIDENTIAL — FOR RTO LEADERSHIP</span>
+        <span style="font-size:12px;opacity:0.4;">traintrack.edu.au</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 2 — THE RTO CHALLENGE
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s2">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.4;"></div>
+      <div class="bg-glow" style="width:500px;height:500px;background:rgba(239,68,68,0.08);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+      <div style="display:flex;height:100%;">
+        <div class="split-left" style="flex:0 0 45%;">
+          <div class="eyebrow" style="color:var(--accent);">The Challenge</div>
+          <h2 style="margin-bottom:20px;">Running an RTO Is<br><span class="amber-text">Complex &amp; Risky</span></h2>
+          <p style="opacity:0.7;margin-bottom:30px;">ASQA audits, USI verification, AVETMISS reporting, trainer compliance — one oversight can cost you registration. Most LMS tools weren't built for Australian compliance.</p>
+          <div class="tag tag-amber">TrainTrack solves all of this</div>
+        </div>
+
+        <div class="split-right" style="flex:0 0 55%;padding-left:40px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+            <div class="card" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);">
+              <div style="width:46px;height:46px;border-radius:10px;background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+              </div>
+              <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#FCA5A5;">AVETMISS Headaches</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Manual NAT file generation, data errors, annual re-work</div>
+            </div>
+
+            <div class="card" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);">
+              <div style="width:46px;height:46px;border-radius:10px;background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#FCA5A5;">ASQA Audit Risk</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Missing evidence, trainer qualification gaps, non-compliant records</div>
+            </div>
+
+            <div class="card" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);">
+              <div style="width:46px;height:46px;border-radius:10px;background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10 10 0 0 1 12 5c7 0 11 8 11 8a18.8 18.8 0 0 1-2.81 4.2"/><path d="M6.61 6.61A13.5 13.5 0 0 0 1 12s4 8 11 8a11.1 11.1 0 0 0 6.39-2"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+              </div>
+              <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#FCA5A5;">No Visibility</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Students at risk, grading backlogs, poor attendance — discovered too late</div>
+            </div>
+
+            <div class="card" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);">
+              <div style="width:46px;height:46px;border-radius:10px;background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><line x1="12" y1="6" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="18"/></svg>
+              </div>
+              <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#FCA5A5;">Legacy Software Costs</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">$400–$900/mo for clunky systems that need IT support to run</div>
+            </div>
+
+            <div class="card" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);">
+              <div style="width:46px;height:46px;border-radius:10px;background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              </div>
+              <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#FCA5A5;">Disconnected Tools</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Separate apps for assessments, attendance, USI, and records</div>
+            </div>
+
+            <div class="card" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.25);">
+              <div style="width:46px;height:46px;border-radius:10px;background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+              </div>
+              <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:#FCD34D;">TrainTrack Fixes This</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">One platform. All compliance. Built for Australian RTOs.</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 3 — PLATFORM OVERVIEW
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s3">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.35;"></div>
+      <div class="bg-glow" style="width:600px;height:600px;background:rgba(15,118,110,0.18);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+      <div class="content-center" style="padding-top:50px;padding-bottom:80px;">
+        <div class="eyebrow" style="color:var(--brand2);">Platform Overview</div>
+        <h2 style="margin-bottom:12px;">Everything an RTO Needs,<br><span class="gradient-text">In One Platform</span></h2>
+        <p style="opacity:0.6;margin-bottom:40px;max-width:500px;">Eight integrated modules that talk to each other — no manual data entry between systems.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:100%;max-width:1100px;">
+
+          <div class="card" style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(15,118,110,0.2);border:1px solid rgba(20,184,166,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5EEAD4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Student Management</div>
+            <div style="font-size:13px;opacity:0.65;line-height:1.45;">USI verification, profiles, progress tracking</div>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Assessment Builder</div>
+            <div style="font-size:13px;opacity:0.65;line-height:1.45;">Drag-and-drop designer, 12 element types, AI import</div>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Attendance Tracking</div>
+            <div style="font-size:13px;opacity:0.65;line-height:1.45;">Digital roll, session management, compliance reports</div>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Analytics</div>
+            <div style="font-size:13px;opacity:0.65;line-height:1.45;">At-risk alerts, grading backlog, completion rates</div>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(15,118,110,0.2);border:1px solid rgba(20,184,166,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5EEAD4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">AVETMISS Export</div>
+            <div style="font-size:13px;opacity:0.65;line-height:1.45;">One-click NAT files, annual return ready</div>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">RPL Workflow</div>
+            <div style="font-size:13px;opacity:0.65;line-height:1.45;">Evidence upload, assessor review, digital determination</div>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Enrolments &amp; Intakes</div>
+            <div style="font-size:13px;opacity:0.65;line-height:1.45;">Intake scheduling, bulk enrolment, trainer assignment</div>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Staff &amp; Trainers</div>
+            <div style="font-size:13px;opacity:0.65;line-height:1.45;">Qualification mapping, TAE compliance, roles</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 4 — STUDENT MANAGEMENT
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s4">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.4;"></div>
+      <div class="bg-glow" style="width:400px;height:400px;background:rgba(16,185,129,0.1);top:-50px;right:100px;"></div>
+
+      <div style="display:flex;height:100%;">
+        <div class="split-left" style="flex:0 0 40%;padding-right:30px;">
+          <div class="eyebrow" style="color:#34D399;">Module 1</div>
+          <h2 style="margin-bottom:16px;">Student<br><span class="gradient-text">Management</span></h2>
+          <p style="opacity:0.7;margin-bottom:24px;font-size:15px;">Complete student lifecycle management — from application to graduation — with full AVETMISS demographic capture.</p>
+
+          <div class="feat-row">
+            <div class="feat-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5EEAD4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg>
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">USI Verification</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Automated USI Registry lookup, bulk verification queue</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5EEAD4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Bulk CSV Import</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Migrate from VETtrak, aXcelerate, or spreadsheets</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5EEAD4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Progress Tracking</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Unit-by-unit completion, outcomes, attempt history</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5EEAD4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Legacy Student #</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Preserve old system IDs during migration (VT-12345)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-right" style="flex:0 0 60%;padding-left:20px;justify-content:center;">
+          <div class="mock-window" style="width:100%;max-width:620px;">
+            <div class="mock-titlebar">
+              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+              <span class="mock-title">TrainTrack — Student Register</span>
+            </div>
+            <div class="mock-body" style="padding:12px;">
+              <div style="display:flex;gap:8px;margin-bottom:12px;">
+                <input style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:7px 12px;color:rgba(255,255,255,0.8);font-size:12px;outline:none;" placeholder="🔍  Search students…" readonly>
+                <button style="background:rgba(15,118,110,0.3);border:1px solid rgba(20,184,166,0.3);color:#5EEAD4;border-radius:6px;padding:7px 14px;font-size:12px;cursor:pointer;">+ Add Student</button>
+              </div>
+              <table class="mock-table">
+                <thead><tr><th>Student</th><th>Student #</th><th>Qualification</th><th>USI</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0F766E,#5EEAD4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">AW</div>
+                        <div>
+                          <div style="font-weight:600;font-size:12px;">Alice Wright</div>
+                          <div style="font-size:10px;opacity:0.5;">alice.w@email.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="font-size:11px;opacity:0.7;">STU-001</td>
+                    <td style="font-size:11px;">CHC33015</td>
+                    <td><span class="pill pill-c" style="font-size:10px;">✓ Verified</span></td>
+                    <td><span class="pill pill-c" style="font-size:10px;">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">BT</div>
+                        <div>
+                          <div style="font-weight:600;font-size:12px;">Ben Turner</div>
+                          <div style="font-size:10px;opacity:0.5;">ben.t@email.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="font-size:11px;opacity:0.7;">STU-002</td>
+                    <td style="font-size:11px;">BSB40120</td>
+                    <td><span class="pill pill-p" style="font-size:10px;">⏳ Pending</span></td>
+                    <td><span class="pill pill-c" style="font-size:10px;">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#EA580C,#FCA5A5);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">CL</div>
+                        <div>
+                          <div style="font-weight:600;font-size:12px;">Carmen Lee</div>
+                          <div style="font-size:10px;opacity:0.5;">carmen.l@email.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="font-size:11px;opacity:0.7;">STU-003</td>
+                    <td style="font-size:11px;">CHC33015</td>
+                    <td><span class="pill pill-c" style="font-size:10px;">✓ Verified</span></td>
+                    <td><span style="background:rgba(245,158,11,0.15);color:#FCD34D;padding:3px 8px;border-radius:100px;font-size:10px;font-weight:600;">⚠ At Risk</span></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div style="display:flex;align-items:center;gap:8px;">
+                        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0369A1,#7DD3FC);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">DM</div>
+                        <div>
+                          <div style="font-weight:600;font-size:12px;">David Mao</div>
+                          <div style="font-size:10px;opacity:0.5;">david.m@email.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="font-size:11px;opacity:0.7;">STU-004</td>
+                    <td style="font-size:11px;">ICT30120</td>
+                    <td><span class="pill pill-c" style="font-size:10px;">✓ Verified</span></td>
+                    <td><span class="pill pill-c" style="font-size:10px;">Active</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 5 — ASSESSMENT BUILDER
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s5">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.35;"></div>
+      <div class="bg-glow" style="width:500px;height:500px;background:rgba(139,92,246,0.12);top:50%;right:-100px;transform:translateY(-50%);"></div>
+
+      <div style="display:flex;height:100%;">
+        <div class="split-left" style="flex:0 0 38%;padding-right:20px;">
+          <div class="eyebrow" style="color:#A78BFA;">Module 2</div>
+          <h2 style="margin-bottom:16px;">Assessment<br><span style="background:linear-gradient(135deg,#A78BFA,#DDD6FE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Builder</span></h2>
+          <p style="opacity:0.7;margin-bottom:24px;font-size:14px;">Design professional assessments without touching Word or PDF. Build, publish, and grade — all in one tool.</p>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:12px 14px;">
+              <div style="font-size:14px;font-weight:700;margin-bottom:5px;color:#C4B5FD;">12 Element Types</div>
+              <div style="font-size:13px;opacity:0.7;line-height:1.5;">MCQ, Short/Long Answer, Matching, T/F, Observation Checklists, File Upload, and more</div>
+            </div>
+            <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:12px 14px;">
+              <div style="font-size:14px;font-weight:700;margin-bottom:5px;color:#C4B5FD;">AI Document Import</div>
+              <div style="font-size:13px;opacity:0.7;line-height:1.5;">Upload existing PDF/DOCX assessments — AI extracts questions, options, and correct answers</div>
+            </div>
+            <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:12px 14px;">
+              <div style="font-size:14px;font-weight:700;margin-bottom:5px;color:#C4B5FD;">Inline Grading</div>
+              <div style="font-size:13px;opacity:0.7;line-height:1.5;">Mark question-by-question, add feedback, Competent / NYC outcomes with one click</div>
+            </div>
+            <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:12px 14px;">
+              <div style="font-size:14px;font-weight:700;margin-bottom:5px;color:#C4B5FD;">Turnitin Integration</div>
+              <div style="font-size:13px;opacity:0.7;line-height:1.5;">Students attach similarity report PDF; colour-coded risk badge for assessors</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:0 0 62%;display:flex;align-items:center;justify-content:center;padding:30px 50px 30px 10px;">
+          <div class="mock-window" style="width:100%;max-width:700px;">
+            <div class="mock-titlebar">
+              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+              <span class="mock-title">Assessment Builder — Written Knowledge Assessment</span>
+              <div style="margin-left:auto;display:flex;gap:8px;">
+                <span style="background:rgba(255,255,255,0.06);padding:3px 10px;border-radius:4px;font-size:10px;opacity:0.5;">Builder</span>
+                <span style="background:rgba(255,255,255,0.06);padding:3px 10px;border-radius:4px;font-size:10px;opacity:0.5;">Student View</span>
+                <span style="background:rgba(255,255,255,0.06);padding:3px 10px;border-radius:4px;font-size:10px;opacity:0.5;">Settings</span>
+              </div>
+            </div>
+            <div style="display:flex;height:340px;">
+              <!-- Palette -->
+              <div style="width:160px;border-right:1px solid rgba(255,255,255,0.06);padding:12px;overflow:hidden;">
+                <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;opacity:0.4;margin-bottom:8px;">Elements</div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  <div style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.25);border-radius:6px;padding:7px 10px;font-size:11px;cursor:pointer;">◉ Multiple Choice</div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px;font-size:11px;cursor:pointer;">▤ Short Answer</div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px;font-size:11px;cursor:pointer;">▦ Long Answer</div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px;font-size:11px;cursor:pointer;">◑ True / False</div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px;font-size:11px;cursor:pointer;">⇄ Matching</div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px;font-size:11px;cursor:pointer;">☑ Obs. Checklist</div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px;font-size:11px;cursor:pointer;">📎 File Upload</div>
+                </div>
+              </div>
+              <!-- Canvas -->
+              <div style="flex:1;padding:14px;overflow:hidden;">
+                <div style="background:rgba(255,255,255,0.03);border:2px solid rgba(139,92,246,0.35);border-radius:8px;padding:12px;margin-bottom:8px;">
+                  <div style="font-size:10px;opacity:0.45;margin-bottom:4px;">Q1 · Multiple Choice · 1 mark</div>
+                  <div style="font-size:12px;font-weight:600;margin-bottom:8px;">Which Act governs the National VET Regulator?</div>
+                  <div style="display:flex;flex-direction:column;gap:4px;">
+                    <div style="font-size:11px;padding:4px 10px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);border-radius:4px;color:#34D399;">A. National Vocational Education and Training Regulator Act 2011 ✓</div>
+                    <div style="font-size:11px;padding:4px 10px;opacity:0.5;">B. Training and Workforce Development Act 2013</div>
+                    <div style="font-size:11px;padding:4px 10px;opacity:0.5;">C. Australian Skills Quality Authority Act 2011</div>
+                  </div>
+                </div>
+                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px;">
+                  <div style="font-size:10px;opacity:0.45;margin-bottom:4px;">Q2 · Short Answer · 2 marks</div>
+                  <div style="font-size:12px;font-weight:600;margin-bottom:6px;">Explain two responsibilities of an RTO under Clause 1.1.</div>
+                  <!-- Label callout -->
+                  <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-left:3px solid #F59E0B;border-radius:4px;padding:6px 10px;margin-bottom:6px;">
+                    <div style="font-size:10px;font-weight:700;color:#FCD34D;margin-bottom:2px;">Important:</div>
+                    <div style="font-size:10px;opacity:0.7;">Refer to the Standards for RTOs 2015</div>
+                  </div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:4px;padding:8px;min-height:32px;font-size:11px;opacity:0.3;">Student answer area…</div>
+                </div>
+              </div>
+              <!-- Properties -->
+              <div style="width:150px;border-left:1px solid rgba(255,255,255,0.06);padding:12px;overflow:hidden;">
+                <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;opacity:0.4;margin-bottom:8px;">Properties</div>
+                <div style="margin-bottom:10px;">
+                  <div style="font-size:10px;opacity:0.5;margin-bottom:3px;">Visible to</div>
+                  <div style="background:rgba(255,255,255,0.06);border-radius:4px;padding:4px 8px;font-size:11px;">Both</div>
+                </div>
+                <div style="margin-bottom:10px;">
+                  <div style="font-size:10px;opacity:0.5;margin-bottom:3px;">Marks</div>
+                  <div style="background:rgba(255,255,255,0.06);border-radius:4px;padding:4px 8px;font-size:11px;">1</div>
+                </div>
+                <div>
+                  <div style="font-size:10px;opacity:0.5;margin-bottom:3px;">Notes</div>
+                  <button style="width:100%;background:rgba(139,92,246,0.15);border:1px dashed rgba(139,92,246,0.3);border-radius:4px;padding:5px;font-size:10px;color:#C4B5FD;cursor:pointer;">+ Add Note</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 6 — ATTENDANCE & SCHEDULING
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s6">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.4;"></div>
+      <div class="bg-glow" style="width:400px;height:400px;background:rgba(59,130,246,0.1);bottom:-100px;left:200px;"></div>
+
+      <div style="display:flex;height:100%;">
+        <div style="flex:0 0 58%;display:flex;align-items:center;justify-content:center;padding:30px 20px 30px 50px;">
+          <div class="mock-window" style="width:100%;max-width:680px;">
+            <div class="mock-titlebar">
+              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+              <span class="mock-title">Attendance — CHC33015 Session Roll</span>
+            </div>
+            <div class="mock-body">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div>
+                  <div style="font-size:13px;font-weight:700;">CHCDIV001 — Work with Diverse People</div>
+                  <div style="font-size:11px;opacity:0.5;">Tuesday 20 May 2025 · 9:00 AM – 1:00 PM · Room 2B</div>
+                </div>
+                <button style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.3);color:#34D399;border-radius:6px;padding:6px 14px;font-size:11px;cursor:pointer;">✓ Mark All Present</button>
+              </div>
+              <table class="mock-table">
+                <thead><tr><th>Student</th><th>Status</th><th>Signed In</th><th>Notes</th></tr></thead>
+                <tbody>
+                  <tr><td>Alice Wright</td><td><span class="pill pill-c" style="font-size:10px;">Present</span></td><td style="font-size:11px;opacity:0.6;">9:02 AM</td><td></td></tr>
+                  <tr><td>Ben Turner</td><td><span class="pill pill-c" style="font-size:10px;">Present</span></td><td style="font-size:11px;opacity:0.6;">9:05 AM</td><td></td></tr>
+                  <tr><td>Carmen Lee</td><td><span class="pill pill-p" style="font-size:10px;">Late</span></td><td style="font-size:11px;opacity:0.6;">9:43 AM</td><td style="font-size:11px;opacity:0.5;">30 min late</td></tr>
+                  <tr><td>David Mao</td><td><span class="pill pill-n" style="font-size:10px;">Absent</span></td><td style="font-size:11px;opacity:0.3;">—</td><td style="font-size:11px;opacity:0.5;">Not notified</td></tr>
+                  <tr><td>Emma Ross</td><td><span class="pill pill-c" style="font-size:10px;">Present</span></td><td style="font-size:11px;opacity:0.6;">8:58 AM</td><td></td></tr>
+                </tbody>
+              </table>
+              <div style="margin-top:12px;display:flex;gap:10px;">
+                <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:6px;padding:10px;text-align:center;">
+                  <div style="font-size:20px;font-weight:700;color:#34D399;">3</div>
+                  <div style="font-size:10px;opacity:0.5;">Present</div>
+                </div>
+                <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:6px;padding:10px;text-align:center;">
+                  <div style="font-size:20px;font-weight:700;color:#FCD34D;">1</div>
+                  <div style="font-size:10px;opacity:0.5;">Late</div>
+                </div>
+                <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:6px;padding:10px;text-align:center;">
+                  <div style="font-size:20px;font-weight:700;color:#F87171;">1</div>
+                  <div style="font-size:10px;opacity:0.5;">Absent</div>
+                </div>
+                <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:6px;padding:10px;text-align:center;">
+                  <div style="font-size:20px;font-weight:700;color:#93C5FD;">80%</div>
+                  <div style="font-size:10px;opacity:0.5;">Rate</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-right" style="flex:0 0 42%;">
+          <div class="eyebrow" style="color:#93C5FD;">Module 3</div>
+          <h2 style="margin-bottom:16px;">Attendance &amp;<br><span style="background:linear-gradient(135deg,#93C5FD,#BFDBFE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Scheduling</span></h2>
+          <p style="opacity:0.7;margin-bottom:24px;font-size:14px;">ASQA requires evidence of attendance. TrainTrack makes digital roll-marking effortless — for trainers in the room or admins online.</p>
+
+          <div class="feat-row">
+            <div class="feat-icon" style="background:rgba(59,130,246,0.15);">📱</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Mobile-Friendly Roll</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Trainers mark attendance on any device — no paper required</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon" style="background:rgba(59,130,246,0.15);">⚠️</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Compliance Alerts</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Automatic flag when student attendance drops below 80%</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon" style="background:rgba(59,130,246,0.15);">📤</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Export Reports</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">CSV exports per qualification, date range, or student</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon" style="background:rgba(59,130,246,0.15);">🗓️</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Session Management</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Timetable, room assignment, trainer scheduling</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 7 — ANALYTICS + AVETMISS
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s7">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.35;"></div>
+      <div class="bg-glow" style="width:500px;height:500px;background:rgba(15,118,110,0.15);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+      <div class="content-center" style="padding-bottom:80px;">
+        <div class="eyebrow" style="color:var(--brand2);">Modules 4 &amp; 5</div>
+        <h2 style="margin-bottom:10px;"><span class="gradient-text">Analytics</span> &amp; AVETMISS Compliance</h2>
+        <p style="opacity:0.6;margin-bottom:32px;max-width:540px;">Real-time insights that tell you who's at risk before ASQA asks — and one-click AVETMISS export when annual return time comes.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:1050px;">
+
+          <!-- KPI cards -->
+          <div class="card" style="text-align:center;padding:20px 14px;">
+            <div style="font-size:13px;opacity:0.6;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">At-Risk Students</div>
+            <div style="font-size:36px;font-weight:800;color:#F87171;margin-bottom:6px;">3</div>
+            <div style="font-size:13px;opacity:0.6;">Attendance &lt; 80% or 2+ NYC outcomes</div>
+          </div>
+
+          <div class="card" style="text-align:center;padding:20px 14px;">
+            <div style="font-size:13px;opacity:0.6;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Completion Rate</div>
+            <div style="font-size:36px;font-weight:800;color:#34D399;margin-bottom:6px;">78%</div>
+            <div class="pbar-wrap" style="margin:0 auto;max-width:100px;"><div class="pbar-fill" style="width:78%;"></div></div>
+          </div>
+
+          <div class="card" style="text-align:center;padding:20px 14px;">
+            <div style="font-size:13px;opacity:0.6;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Grading Backlog</div>
+            <div style="font-size:36px;font-weight:800;color:#FCD34D;margin-bottom:6px;">12</div>
+            <div style="font-size:13px;opacity:0.6;">Submissions awaiting review</div>
+          </div>
+
+          <!-- AVETMISS panel -->
+          <div class="card" style="grid-column:span 2;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:#5EEAD4;">AVETMISS Export — 2025 Annual Return</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;">
+              <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:6px;padding:8px;text-align:center;">
+                <div style="font-size:16px;font-weight:700;color:#34D399;">NAT00060</div>
+                <div style="font-size:9px;opacity:0.5;margin-top:2px;">Training Activity</div>
+              </div>
+              <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:6px;padding:8px;text-align:center;">
+                <div style="font-size:16px;font-weight:700;color:#34D399;">NAT00080</div>
+                <div style="font-size:9px;opacity:0.5;margin-top:2px;">Enrolment</div>
+              </div>
+              <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:6px;padding:8px;text-align:center;">
+                <div style="font-size:16px;font-weight:700;color:#34D399;">NAT00085</div>
+                <div style="font-size:9px;opacity:0.5;margin-top:2px;">Unit Outcome</div>
+              </div>
+              <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:6px;padding:8px;text-align:center;">
+                <div style="font-size:16px;font-weight:700;color:#34D399;">NAT00130</div>
+                <div style="font-size:9px;opacity:0.5;margin-top:2px;">Student Details</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 10px;color:rgba(255,255,255,0.7);font-size:11px;outline:none;">
+                <option>Year: 2025</option>
+              </select>
+              <button style="background:linear-gradient(135deg,#0F766E,#0D9488);border:none;color:#fff;border-radius:6px;padding:7px 18px;font-size:11px;font-weight:700;cursor:pointer;">⬇ Download NAT Files</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:#5EEAD4;">5-Tab Analytics Dashboard</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center;">
+                <span style="opacity:0.7;">Overview &amp; KPIs</span><span class="tag tag-teal" style="padding:2px 8px;font-size:11px;">Live</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center;">
+                <span style="opacity:0.7;">Completion Report</span><span class="tag tag-green" style="padding:2px 8px;font-size:11px;">CSV Export</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center;">
+                <span style="opacity:0.7;">Attendance Report</span><span class="tag tag-green" style="padding:2px 8px;font-size:11px;">CSV Export</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center;">
+                <span style="opacity:0.7;">Assessment Outcomes</span><span class="tag tag-green" style="padding:2px 8px;font-size:11px;">CSV Export</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center;">
+                <span style="opacity:0.7;">Student Progress</span><span class="tag tag-amber" style="padding:2px 8px;font-size:11px;">At-Risk Flag</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 8 — RPL WORKFLOW
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s8">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.4;"></div>
+      <div class="bg-glow" style="width:450px;height:450px;background:rgba(234,88,12,0.08);top:-50px;right:50px;"></div>
+
+      <div style="display:flex;height:100%;">
+        <div class="split-left" style="flex:0 0 40%;">
+          <div class="eyebrow" style="color:#FB923C;">Module 6</div>
+          <h2 style="margin-bottom:16px;">RPL<br><span style="background:linear-gradient(135deg,#FB923C,#FED7AA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Workflow</span></h2>
+          <p style="opacity:0.7;margin-bottom:24px;font-size:14px;">Recognition of Prior Learning requires careful evidence tracking and formal determination. TrainTrack digitises the entire RPL process, creating an audit trail ASQA will love.</p>
+
+          <!-- RPL Stages -->
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;">
+              <div style="width:30px;height:30px;border-radius:50%;background:rgba(251,146,60,0.2);border:2px solid rgba(251,146,60,0.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FB923C;flex-shrink:0;">1</div>
+              <div>
+                <div style="font-size:15px;font-weight:700;margin-bottom:3px;">Application Submitted</div>
+                <div style="font-size:13px;opacity:0.65;line-height:1.5;">Student submits background and unit claims</div>
+              </div>
+            </div>
+            <div style="width:2px;height:16px;background:rgba(251,146,60,0.25);margin-left:14px;"></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;">
+              <div style="width:30px;height:30px;border-radius:50%;background:rgba(251,146,60,0.2);border:2px solid rgba(251,146,60,0.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FB923C;flex-shrink:0;">2</div>
+              <div>
+                <div style="font-size:15px;font-weight:700;margin-bottom:3px;">Evidence Uploaded</div>
+                <div style="font-size:13px;opacity:0.65;line-height:1.5;">Certificates, portfolios, references — any file type</div>
+              </div>
+            </div>
+            <div style="width:2px;height:16px;background:rgba(251,146,60,0.25);margin-left:14px;"></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;">
+              <div style="width:30px;height:30px;border-radius:50%;background:rgba(251,146,60,0.2);border:2px solid rgba(251,146,60,0.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#FB923C;flex-shrink:0;">3</div>
+              <div>
+                <div style="font-size:15px;font-weight:700;margin-bottom:3px;">Assessor Reviews</div>
+                <div style="font-size:13px;opacity:0.65;line-height:1.5;">Per-element assessment with notes and outcome</div>
+              </div>
+            </div>
+            <div style="width:2px;height:16px;background:rgba(251,146,60,0.25);margin-left:14px;"></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;">
+              <div style="width:30px;height:30px;border-radius:50%;background:rgba(16,185,129,0.2);border:2px solid rgba(16,185,129,0.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#34D399;flex-shrink:0;">4</div>
+              <div>
+                <div style="font-size:15px;font-weight:700;margin-bottom:3px;">Determination Issued</div>
+                <div style="font-size:13px;opacity:0.65;line-height:1.5;">Granted / Not Granted with audit trail and timestamp</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:0 0 60%;display:flex;align-items:center;justify-content:center;padding:30px 60px 30px 20px;">
+          <div class="mock-window" style="width:100%;max-width:620px;">
+            <div class="mock-titlebar">
+              <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+              <span class="mock-title">RPL Application — Carmen Lee</span>
+            </div>
+            <div class="mock-body">
+              <div style="display:flex;justify-content:space-between;margin-bottom:14px;">
+                <div>
+                  <div style="font-size:13px;font-weight:700;">CHCCOM002 — Use Communication to Build Relationships</div>
+                  <div style="font-size:11px;opacity:0.5;">Submitted 14 May 2025 · Assessor: Alex Chen</div>
+                </div>
+                <span style="background:rgba(251,146,60,0.15);color:#FB923C;border:1px solid rgba(251,146,60,0.3);padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600;">Under Review</span>
+              </div>
+              <!-- Evidence files -->
+              <div style="margin-bottom:14px;">
+                <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;opacity:0.4;margin-bottom:8px;">Evidence Uploaded (3 files)</div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:6px;padding:8px 12px;">
+                    <span style="font-size:16px;">📄</span>
+                    <div style="flex:1;font-size:12px;">certificate_of_completion_2023.pdf</div>
+                    <span style="font-size:10px;opacity:0.5;">2.3 MB</span>
+                    <button style="font-size:10px;color:#5EEAD4;background:none;border:none;cursor:pointer;">↓ Download</button>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:6px;padding:8px 12px;">
+                    <span style="font-size:16px;">📋</span>
+                    <div style="flex:1;font-size:12px;">employment_reference_letter.pdf</div>
+                    <span style="font-size:10px;opacity:0.5;">498 KB</span>
+                    <button style="font-size:10px;color:#5EEAD4;background:none;border:none;cursor:pointer;">↓ Download</button>
+                  </div>
+                </div>
+              </div>
+              <!-- Determination -->
+              <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:12px;">
+                <div style="font-size:11px;font-weight:700;margin-bottom:6px;color:#34D399;">Assessor Determination</div>
+                <div style="display:flex;gap:8px;margin-bottom:8px;">
+                  <button style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);color:#34D399;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:700;cursor:pointer;">✓ Grant RPL</button>
+                  <button style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);border-radius:6px;padding:5px 14px;font-size:11px;cursor:pointer;">✗ Not Granted</button>
+                </div>
+                <input style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:6px 10px;color:rgba(255,255,255,0.7);font-size:11px;outline:none;" placeholder="Assessor notes (required)…" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 9 — MULTI-TENANT & ROLES
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s9">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.35;"></div>
+      <div class="bg-glow" style="width:500px;height:500px;background:rgba(139,92,246,0.1);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+      <div class="content-center" style="padding-bottom:80px;">
+        <div class="eyebrow" style="color:#A78BFA;">Architecture</div>
+        <h2 style="margin-bottom:12px;">Built for <span style="background:linear-gradient(135deg,#A78BFA,#DDD6FE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Multiple RTOs</span> — Complete Isolation</h2>
+        <p style="opacity:0.6;margin-bottom:32px;max-width:560px;">Each RTO gets its own fully isolated data environment. Students, staff, and assessments from one RTO are completely invisible to another.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:1000px;margin-bottom:20px;">
+
+          <!-- Roles -->
+          <div class="card" style="grid-column:span 2;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:#A78BFA;">Role-Based Access Control</div>
+            <table class="mock-table">
+              <thead><tr><th>Role</th><th>Students</th><th>Assessments</th><th>Analytics</th><th>AVETMISS</th><th>Settings</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:700;color:#5EEAD4;">Owner</td>
+                  <td style="color:#34D399;text-align:center;">✓ All RTOs</td>
+                  <td style="color:#34D399;text-align:center;">✓</td>
+                  <td style="color:#34D399;text-align:center;">✓ Platform</td>
+                  <td style="color:#34D399;text-align:center;">✓</td>
+                  <td style="color:#34D399;text-align:center;">✓</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;color:#93C5FD;">Admin</td>
+                  <td style="color:#34D399;text-align:center;">✓ Own RTO</td>
+                  <td style="color:#34D399;text-align:center;">✓ Create</td>
+                  <td style="color:#34D399;text-align:center;">✓</td>
+                  <td style="color:#34D399;text-align:center;">✓</td>
+                  <td style="color:#34D399;text-align:center;">✓</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;color:#C4B5FD;">Team Lead</td>
+                  <td style="color:#34D399;text-align:center;">✓</td>
+                  <td style="color:#FCD34D;text-align:center;">View/Grade</td>
+                  <td style="color:#34D399;text-align:center;">✓</td>
+                  <td style="color:#34D399;text-align:center;">✓</td>
+                  <td style="color:#34D399;text-align:center;">✓</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;color:#86EFAC;">Trainer</td>
+                  <td style="color:#FCD34D;text-align:center;">Assigned</td>
+                  <td style="color:#FCD34D;text-align:center;">Assigned</td>
+                  <td style="color:#FCD34D;text-align:center;">Assigned</td>
+                  <td style="color:#F87171;text-align:center;">—</td>
+                  <td style="color:#F87171;text-align:center;">—</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:700;">Assessor</td>
+                  <td style="color:#F87171;text-align:center;">—</td>
+                  <td style="color:#FCD34D;text-align:center;">Grade only</td>
+                  <td style="color:#F87171;text-align:center;">—</td>
+                  <td style="color:#F87171;text-align:center;">—</td>
+                  <td style="color:#F87171;text-align:center;">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="card">
+              <div style="font-size:32px;margin-bottom:10px;">🔒</div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Complete Data Isolation</div>
+              <div style="font-size:13px;opacity:0.7;line-height:1.5;">Each RTO's data is scoped by tenant_id — cross-tenant access is impossible at the API layer</div>
+            </div>
+            <div class="card">
+              <div style="font-size:32px;margin-bottom:10px;">🇦🇺</div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Australian Data Centre</div>
+              <div style="font-size:13px;opacity:0.7;line-height:1.5;">All data stored in Sydney — satisfies data sovereignty requirements for student records</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 10 — PRICING
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s10">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.4;"></div>
+      <div class="bg-glow" style="width:500px;height:500px;background:rgba(15,118,110,0.15);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+      <div class="content-center" style="padding-bottom:80px;">
+        <div class="eyebrow" style="color:var(--brand2);">Simple, Transparent Pricing</div>
+        <h2 style="margin-bottom:10px;">Choose the Plan That <span class="gradient-text">Fits Your RTO</span></h2>
+        <p style="opacity:0.6;margin-bottom:36px;">All plans include onboarding, support, and Australian data hosting. No lock-in contracts.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:960px;">
+
+          <!-- Starter -->
+          <div class="card" style="padding:28px 24px;">
+            <div style="font-size:15px;font-weight:700;color:#5EEAD4;margin-bottom:8px;">Starter</div>
+            <div style="font-size:44px;font-weight:800;line-height:1;margin-bottom:4px;">$199</div>
+            <div style="font-size:14px;opacity:0.5;margin-bottom:20px;">per month</div>
+            <div style="font-size:14px;font-weight:600;color:#5EEAD4;margin-bottom:12px;">Up to 75 active enrolments</div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
+              <div style="font-size:14px;opacity:0.7;">✓ Student management</div>
+              <div style="font-size:14px;opacity:0.7;">✓ Assessment builder</div>
+              <div style="font-size:14px;opacity:0.7;">✓ Attendance tracking</div>
+              <div style="font-size:14px;opacity:0.7;">✓ AVETMISS export</div>
+              <div style="font-size:14px;opacity:0.7;">✓ Basic analytics</div>
+              <div style="font-size:14px;opacity:0.4;">✗ RPL workflow</div>
+            </div>
+            <div style="font-size:13px;opacity:0.5;margin-bottom:12px;">$750 onboarding · $3.50/extra enrolment</div>
+            <button style="width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;">Get Started</button>
+          </div>
+
+          <!-- Professional (highlighted) -->
+          <div style="background:linear-gradient(160deg,rgba(15,118,110,0.3),rgba(13,148,136,0.2));border:1px solid rgba(20,184,166,0.4);border-radius:12px;padding:28px 24px;position:relative;box-shadow:0 0 40px rgba(15,118,110,0.2);">
+            <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#0F766E,#0D9488);color:#fff;padding:4px 16px;border-radius:100px;font-size:12px;font-weight:700;white-space:nowrap;">MOST POPULAR</div>
+            <div style="font-size:15px;font-weight:700;color:#34D399;margin-bottom:8px;">Professional</div>
+            <div style="font-size:44px;font-weight:800;line-height:1;margin-bottom:4px;">$449</div>
+            <div style="font-size:14px;opacity:0.5;margin-bottom:20px;">per month</div>
+            <div style="font-size:14px;font-weight:600;color:#34D399;margin-bottom:12px;">Up to 250 active enrolments</div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
+              <div style="font-size:14px;opacity:0.7;">✓ Everything in Starter</div>
+              <div style="font-size:14px;opacity:0.7;">✓ RPL workflow</div>
+              <div style="font-size:14px;opacity:0.7;">✓ Advanced analytics</div>
+              <div style="font-size:14px;opacity:0.7;">✓ Team Lead role</div>
+              <div style="font-size:14px;opacity:0.7;">✓ CSV bulk import</div>
+              <div style="font-size:14px;opacity:0.7;">✓ Priority support</div>
+            </div>
+            <div style="font-size:13px;opacity:0.5;margin-bottom:12px;">$1,500 onboarding · $2.00/extra enrolment</div>
+            <button style="width:100%;background:linear-gradient(135deg,#0F766E,#0D9488);border:none;color:#fff;border-radius:8px;padding:10px;font-size:14px;font-weight:700;cursor:pointer;">Get Started</button>
+          </div>
+
+          <!-- Enterprise -->
+          <div class="card" style="padding:28px 24px;">
+            <div style="font-size:15px;font-weight:700;color:#FCD34D;margin-bottom:8px;">Enterprise</div>
+            <div style="font-size:44px;font-weight:800;line-height:1;margin-bottom:4px;">$999<span style="font-size:22px;opacity:0.6;">+</span></div>
+            <div style="font-size:14px;opacity:0.5;margin-bottom:20px;">per month</div>
+            <div style="font-size:14px;font-weight:600;color:#FCD34D;margin-bottom:12px;">Unlimited enrolments</div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
+              <div style="font-size:14px;opacity:0.7;">✓ Everything in Professional</div>
+              <div style="font-size:14px;opacity:0.7;">✓ Dedicated onboarding</div>
+              <div style="font-size:14px;opacity:0.7;">✓ Custom integrations</div>
+              <div style="font-size:14px;opacity:0.7;">✓ SLA &amp; 24/7 support</div>
+              <div style="font-size:14px;opacity:0.7;">✓ White-label options</div>
+              <div style="font-size:14px;opacity:0.7;">✓ Multi-campus support</div>
+            </div>
+            <div style="font-size:13px;opacity:0.5;margin-bottom:12px;">$3,000+ onboarding · custom pricing</div>
+            <button style="width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;">Contact Us</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 11 — MIGRATION & ONBOARDING
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s11">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.35;"></div>
+      <div class="bg-glow" style="width:450px;height:450px;background:rgba(16,185,129,0.1);bottom:-100px;right:100px;"></div>
+
+      <div style="display:flex;height:100%;">
+        <div class="split-left" style="flex:0 0 42%;">
+          <div class="eyebrow" style="color:#34D399;">Getting Started</div>
+          <h2 style="margin-bottom:16px;">Migration &amp;<br><span class="gradient-text">Onboarding</span></h2>
+          <p style="opacity:0.7;margin-bottom:24px;font-size:14px;">Switching from VETtrak, aXcelerate, CloudAssess, or spreadsheets? We've done this before. Your onboarding fee includes the migration.</p>
+
+          <div class="feat-row">
+            <div class="feat-icon" style="background:rgba(16,185,129,0.15);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">We Accept Any Format</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">VETtrak CSV, aXcelerate export, CloudAssess dump, or plain Excel</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon" style="background:rgba(16,185,129,0.15);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Dedicated Migration Session</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">1:1 session to map your data fields and validate before import</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon" style="background:rgba(16,185,129,0.15);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/></svg>
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Legacy Student Numbers Preserved</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Your old student IDs stored alongside new TrainTrack IDs</div>
+            </div>
+          </div>
+          <div class="feat-row">
+            <div class="feat-icon" style="background:rgba(16,185,129,0.15);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Live in 5 Business Days</div>
+              <div style="font-size:14px;opacity:0.7;line-height:1.5;">Up to 500 students. Larger migrations quoted separately.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-right" style="flex:0 0 58%;padding-left:30px;">
+          <div style="font-size:13px;font-weight:700;opacity:0.5;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;">Migration Timeline</div>
+
+          <div style="display:flex;flex-direction:column;gap:0;position:relative;">
+            <div style="position:absolute;left:17px;top:28px;bottom:28px;width:2px;background:linear-gradient(180deg,rgba(15,118,110,0.6),rgba(15,118,110,0.1));"></div>
+
+            <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:20px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0F766E,#0D9488);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;z-index:1;">1</div>
+              <div class="card" style="flex:1;padding:14px 16px;">
+                <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Day 1 — Sign Up &amp; Data Export</div>
+                <div style="font-size:13px;opacity:0.7;line-height:1.5;">We send you export instructions for your current system. You send us the CSV or spreadsheet.</div>
+                <div style="margin-top:8px;display:flex;gap:6px;">
+                  <span class="tag tag-teal" style="font-size:10px;">VETtrak</span>
+                  <span class="tag tag-teal" style="font-size:10px;">aXcelerate</span>
+                  <span class="tag tag-teal" style="font-size:10px;">CloudAssess</span>
+                  <span class="tag tag-teal" style="font-size:10px;">Excel</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:20px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0F766E,#0D9488);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;z-index:1;">2</div>
+              <div class="card" style="flex:1;padding:14px 16px;">
+                <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Day 2–3 — Data Validation</div>
+                <div style="font-size:13px;opacity:0.7;line-height:1.5;">We validate USIs, check qualification codes against TGA, and flag any issues before import.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:20px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0F766E,#0D9488);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;z-index:1;">3</div>
+              <div class="card" style="flex:1;padding:14px 16px;">
+                <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Day 4 — System Setup &amp; Training</div>
+                <div style="font-size:13px;opacity:0.7;line-height:1.5;">Configure qualifications, create trainer accounts, onboarding video call with your admin team.</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:20px;align-items:flex-start;">
+              <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#10B981,#34D399);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;z-index:1;">✓</div>
+              <div class="card" style="flex:1;padding:14px 16px;background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25);">
+                <div style="font-size:14px;font-weight:700;margin-bottom:6px;color:#34D399;">Day 5 — You're Live!</div>
+                <div style="font-size:13px;opacity:0.7;line-height:1.5;">All students, enrolments, and qualifications migrated. Staff trained. Ready for first session.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SLIDE 12 — CTA
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s12">
+    <div class="full-bg">
+      <div class="bg-dots" style="opacity:0.2;"></div>
+      <div class="bg-glow" style="width:700px;height:700px;background:rgba(255,255,255,0.06);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+      <div class="content-center">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:32px;">
+          <div style="width:60px;height:60px;background:rgba(255,255,255,0.15);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;">🚆</div>
+          <span style="font-size:28px;font-weight:800;letter-spacing:-0.5px;">TrainTrack</span>
+        </div>
+
+        <h1 style="max-width:700px;margin-bottom:20px;font-size:clamp(32px,5vw,58px);">
+          Ready to Simplify<br>Your RTO Operations?
+        </h1>
+
+        <p style="max-width:500px;opacity:0.8;margin-bottom:48px;font-size:16px;">
+          Book a 30-minute demo and see how TrainTrack handles student management, assessments, AVETMISS, and compliance — all in one platform.
+        </p>
+
+        <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:48px;">
+          <button style="background:#fff;color:#0F766E;border:none;border-radius:10px;padding:14px 32px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.2);">
+            📅 Book a Free Demo
+          </button>
+          <button style="background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:14px 32px;font-size:16px;font-weight:600;cursor:pointer;">
+            💬 Talk to Sales
+          </button>
+        </div>
+
+        <!-- Bottom stats bar -->
+        <div style="display:flex;gap:40px;flex-wrap:wrap;justify-content:center;">
+          <div style="text-align:center;">
+            <div style="font-size:24px;font-weight:800;margin-bottom:4px;">5 Days</div>
+            <div style="font-size:14px;opacity:0.65;">To go live</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+          <div style="text-align:center;">
+            <div style="font-size:24px;font-weight:800;margin-bottom:4px;">$199/mo</div>
+            <div style="font-size:14px;opacity:0.65;">Starting price</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+          <div style="text-align:center;">
+            <div style="font-size:24px;font-weight:800;margin-bottom:4px;">100%</div>
+            <div style="font-size:14px;opacity:0.65;">AVETMISS compliant</div>
+          </div>
+          <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+          <div style="text-align:center;">
+            <div style="font-size:24px;font-weight:800;margin-bottom:4px;">AU</div>
+            <div style="font-size:14px;opacity:0.65;">Data hosted in Sydney</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom -->
+      <div style="position:absolute;bottom:68px;left:0;right:0;padding:10px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.15);">
+        <span style="font-size:12px;opacity:0.6;">CONFIDENTIAL — FOR RTO LEADERSHIP</span>
+        <span style="font-size:12px;opacity:0.6;">contact@traintrack.work</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── VOICE STATUS BAR ── -->
+<div id="voiceBar" style="
+  position:fixed; top:0; left:0; right:0; height:4px; z-index:2000;
+  background:rgba(255,255,255,0.06); overflow:hidden; pointer-events:none;">
+  <div id="voiceProgress" style="height:100%;width:0;background:linear-gradient(90deg,#0F766E,#5EEAD4);
+    transition:width 0.3s linear; border-radius:0 2px 2px 0;"></div>
+</div>
+
+<!-- ── NARRATION SUBTITLE ── -->
+<div id="subtitle" style="
+  position:fixed; bottom:78px; left:50%; transform:translateX(-50%);
+  max-width:780px; width:90%; text-align:center; z-index:999;
+  font-size:14px; line-height:1.55; color:rgba(255,255,255,0.92);
+  background:rgba(10,20,40,0.82); backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.1); border-radius:10px;
+  padding:10px 20px; min-height:42px; display:none;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  letter-spacing:0.01em;">
+</div>
+
+<!-- ── NAVIGATION ── -->
+<div class="nav">
+  <button id="prevBtn" onclick="goSlide(-1)" disabled title="Previous (←)">‹</button>
+  <div class="dots" id="dots"></div>
+  <span class="slide-counter" id="counter">1 / 12</span>
+  <button id="nextBtn" onclick="goSlide(1)" title="Next (→)">›</button>
+
+  <!-- Divider -->
+  <div style="width:1px;height:20px;background:rgba(255,255,255,0.15);margin:0 4px;"></div>
+
+  <!-- Voice controls -->
+  <button id="voiceBtn" onclick="toggleVoice()" title="Play narration (V)"
+    style="font-size:16px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;">
+    🔇
+  </button>
+  <button id="replayBtn" onclick="speakCurrent()" title="Replay narration (R)"
+    style="font-size:13px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;opacity:0.5;">
+    ↺
+  </button>
+
+  <!-- Divider -->
+  <div style="width:1px;height:20px;background:rgba(255,255,255,0.15);margin:0 4px;"></div>
+
+  <!-- Music toggle -->
+  <button id="musicBtn" onclick="toggleMusic()" title="Background music (M)"
+    style="font-size:15px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;opacity:0.4;">
+    🎵
+  </button>
+</div>
+
+<script>
+  /* ═══════════════════════════════════════════════════════
+     NARRATION SCRIPTS — one per slide
+  ═══════════════════════════════════════════════════════ */
+  const NARRATION = [
+    /* 1 — Cover */
+    `Welcome to TrainTrack — the modern learning management system built exclusively for Australian Registered Training Organisations.
+    We've combined everything your RTO needs into one platform: student management, AVETMISS compliance, digital assessments, attendance tracking, and much more.
+    All data is hosted in Australia, all features are built to keep you audit-ready, every single day.`,
+
+    /* 2 — Challenge */
+    `Running an RTO is genuinely complex. ASQA audits demand evidence you may not have readily available. AVETMISS reporting is time-consuming and error-prone. Legacy software costs hundreds of dollars a month and still requires manual work between disconnected tools.
+    Your staff are managing students, trainers, compliance, and assessments — often across three or four different systems. TrainTrack was built specifically to solve every one of these problems, in one place.`,
+
+    /* 3 — Overview */
+    `TrainTrack brings eight fully integrated modules under one roof.
+    Student management with USI verification. A drag-and-drop Assessment Builder with AI document import. Digital attendance tracking. Five-tab analytics with at-risk alerts. One-click AVETMISS export. A full RPL workflow with audit trail. Enrolments and intake scheduling. And staff and trainer management with TAE compliance tracking.
+    Every module talks to the others — no duplicate data entry, no manual exports between systems.`,
+
+    /* 4 — Student Management */
+    `Your student register is the foundation of everything.
+    TrainTrack captures all AVETMISS-required demographics from day one. USI verification is automated through the national registry, and a bulk queue shows you exactly who still needs verification.
+    Bulk CSV import lets you migrate from VETtrak, aXcelerate, or even a spreadsheet in minutes. Legacy student numbers are preserved alongside TrainTrack IDs — so your staff can find anyone during the transition period.
+    And every student's progress is tracked unit by unit, with full outcome history.`,
+
+    /* 5 — Assessment Builder */
+    `The Assessment Builder is unlike anything else available for Australian RTOs.
+    Drag and drop twelve question types onto a live canvas — multiple choice, short and long answer, true-or-false, matching, observation checklists, file upload, and more.
+    Upload an existing PDF or Word assessment, and our AI parser extracts every question, every option, and every correct answer automatically — saving hours of manual rebuilding.
+    Students submit online. Assessors mark question by question, add feedback, and issue Competent or Not Yet Competent decisions with a single click.
+    The optional Turnitin integration lets students attach a similarity report, with a colour-coded risk badge visible to assessors.`,
+
+    /* 6 — Attendance */
+    `ASQA expects clear evidence of student attendance. TrainTrack makes it effortless.
+    Trainers mark the digital roll on any device — phone, tablet, or laptop — directly in the session. No paper, no manual data entry later.
+    The system automatically flags any student whose attendance drops below eighty percent, before it becomes a compliance problem.
+    All attendance records are exportable by qualification, by date range, or by individual student — ready for any audit or internal review at any time.`,
+
+    /* 7 — Analytics & AVETMISS */
+    `See the real health of your RTO at a glance.
+    Five analytics tabs give you completion rates, attendance trends, assessment outcomes, and individual student progress — all filtered by qualification.
+    At-risk students are flagged automatically: low attendance, multiple Not Yet Competent outcomes, or both. You see the problem before it becomes a complaint.
+    And when annual return time arrives, one click downloads your complete AVETMISS NAT files — ready to submit to the National Centre for Vocational Education Research. No manual preparation required.`,
+
+    /* 8 — RPL */
+    `Recognition of Prior Learning is notoriously difficult to manage compliantly. One missing piece of evidence, one undocumented determination, and you have an audit finding.
+    TrainTrack digitises the entire RPL workflow. Students submit their application and upload supporting evidence online — certificates, portfolios, employment references, any file type.
+    Assessors review each performance element, add notes, and issue a formal determination. Every step is timestamped and permanently stored, creating the complete audit trail that ASQA requires.`,
+
+    /* 9 — Multi-tenant & Roles */
+    `TrainTrack supports granular role-based access control designed specifically for RTO team structures.
+    Admins have full access to their RTO. Trainers see only their assigned students and assessments. The Team Lead role gives senior staff full management capability — without the ability to create new assessments.
+    Assessors access only the grading interface. Students see only their own submissions and results.
+    And if you manage multiple RTOs, our multi-tenant architecture ensures complete data isolation between them. One organisation's students and assessments are completely invisible to another.`,
+
+    /* 10 — Pricing */
+    `Our pricing is transparent and designed for RTOs of every size.
+    The Starter plan at one hundred and ninety-nine dollars per month suits smaller providers with up to seventy-five active enrolments. It includes all core features: student management, assessment builder, attendance, and AVETMISS export.
+    Professional at four hundred and forty-nine dollars unlocks RPL, advanced analytics, the Team Lead role, and up to two hundred and fifty enrolments.
+    Enterprise offers unlimited enrolments, custom integrations, a service-level agreement, and dedicated onboarding.
+    All plans include Australian data hosting and no lock-in contracts.`,
+
+    /* 11 — Migration */
+    `Switching systems is the number one reason RTOs stay on software they're unhappy with. We've made migration as simple as possible.
+    In five business days, we'll migrate your students, enrolments, and qualifications from VETtrak, aXcelerate, CloudAssess, or even a spreadsheet.
+    Day one: we receive your data export. Days two and three: we validate every record — checking USIs and qualification codes against TGA. Day four: we configure your system and train your admin team. Day five: you are live.
+    Your onboarding fee covers the full migration for up to five hundred students. Larger migrations are quoted separately.`,
+
+    /* 12 — CTA */
+    `TrainTrack is ready to transform how your RTO operates — from your very first student enrolment, all the way through to your annual AVETMISS return.
+    Book a free thirty-minute demo and we'll show you exactly how TrainTrack handles your specific qualification mix and compliance requirements.
+    There's no obligation, no sales pressure — just a live walkthrough of the platform with your questions answered in real time.
+    Live in five days. Starting from just one hundred and ninety-nine dollars a month. One hundred percent AVETMISS compliant. All data hosted in Sydney.
+    We look forward to speaking with you.`,
+  ]
+
+  /* ═══════════════════════════════════════════════════════
+     SLIDE NAVIGATION
+  ═══════════════════════════════════════════════════════ */
+  const slides  = document.querySelectorAll('.slide')
+  const TOTAL   = slides.length
+  let current   = 0
+
+  const dotsEl   = document.getElementById('dots')
+  const counter  = document.getElementById('counter')
+  const prevBtn  = document.getElementById('prevBtn')
+  const nextBtn  = document.getElementById('nextBtn')
+  const subtitle = document.getElementById('subtitle')
+
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('div')
+    d.className = 'dot' + (i === 0 ? ' active' : '')
+    d.onclick = () => goTo(i)
+    dotsEl.appendChild(d)
+  }
+
+  function goTo(n) {
+    slides[current].classList.remove('active')
+    dotsEl.children[current].classList.remove('active')
+    current = Math.max(0, Math.min(n, TOTAL - 1))
+    slides[current].classList.add('active')
+    dotsEl.children[current].classList.add('active')
+    counter.textContent = (current + 1) + ' / ' + TOTAL
+    prevBtn.disabled = current === 0
+    nextBtn.disabled = current === TOTAL - 1
+    if (voiceEnabled) speakCurrent()
+    else stopSpeaking()
+  }
+
+  function goSlide(dir) { goTo(current + dir) }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goSlide(1) }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); goSlide(-1) }
+    if (e.key.toLowerCase() === 'v') toggleVoice()
+    if (e.key.toLowerCase() === 'r') speakCurrent()
+    if (e.key.toLowerCase() === 'm') toggleMusic()
+  })
+
+  /* ═══════════════════════════════════════════════════════
+     SPEECH ENGINE
+  ═══════════════════════════════════════════════════════ */
+  let voiceEnabled   = false
+  let selectedVoice  = null
+  let utterance      = null
+  let progressTimer  = null
+  let progressStart  = 0
+  let progressDur    = 0
+
+  const voiceBtn     = document.getElementById('voiceBtn')
+  const replayBtn    = document.getElementById('replayBtn')
+  const voiceBar     = document.getElementById('voiceProgress')
+
+  // ── Pick the best available male voice ──────────────────
+  function pickMaleVoice(voices) {
+    // Priority list — male voices across Chrome / Edge / Firefox / Safari
+    const preferred = [
+      'Google UK English Male',
+      'Microsoft Ryan Online (Natural) - English (United Kingdom)',
+      'Microsoft James Online (Natural) - English (Australia)',
+      'Microsoft William Online (Natural) - English (Australia)',
+      'Microsoft Guy Online (Natural) - English (United States)',
+      'Microsoft David Desktop - English (United States)',
+      'Microsoft Mark Desktop - English (United States)',
+      'Alex',          // macOS
+      'Daniel',        // macOS UK
+      'Fred',          // macOS
+    ]
+    for (const name of preferred) {
+      const match = voices.find(v => v.name === name)
+      if (match) return match
+    }
+    // Fallback: any voice whose name hints at male or English-AU/GB
+    const fallback = voices.find(v =>
+      /(male|david|james|william|guy|ryan|mark|daniel|alex|fred)/i.test(v.name) &&
+      /(en[-_]|english)/i.test(v.lang || v.name)
+    )
+    if (fallback) return fallback
+    // Last resort: any English voice
+    return voices.find(v => /^en/i.test(v.lang)) || voices[0] || null
+  }
+
+  function loadVoices() {
+    const voices = speechSynthesis.getVoices()
+    if (voices.length) selectedVoice = pickMaleVoice(voices)
+  }
+
+  loadVoices()
+  speechSynthesis.onvoiceschanged = loadVoices
+
+  // ── Word-by-word subtitle highlighter ───────────────────
+  function showSubtitle(text) {
+    subtitle.style.display = 'none'
+    subtitle.textContent = ''
+    const words = text.trim().replace(/\s+/g, ' ').split(' ')
+    words.forEach((w, i) => {
+      const span = document.createElement('span')
+      span.textContent = (i > 0 ? ' ' : '') + w
+      span.style.transition = 'color 0.15s, opacity 0.15s'
+      span.style.opacity = '0.35'
+      subtitle.appendChild(span)
+    })
+    return subtitle.querySelectorAll('span')
+  }
+
+  // ── Progress bar ─────────────────────────────────────────
+  function startProgress(durationMs) {
+    clearInterval(progressTimer)
+    progressStart = Date.now()
+    progressDur   = durationMs
+    voiceBar.style.width = '0%'
+    voiceBar.style.transition = 'none'
+    progressTimer = setInterval(() => {
+      const pct = Math.min(100, ((Date.now() - progressStart) / progressDur) * 100)
+      voiceBar.style.width = pct + '%'
+      if (pct >= 100) clearInterval(progressTimer)
+    }, 80)
+  }
+
+  function stopProgress() {
+    clearInterval(progressTimer)
+    voiceBar.style.transition = 'width 0.4s ease'
+    voiceBar.style.width = '0%'
+  }
+
+  // ── Speak ────────────────────────────────────────────────
+  function speakCurrent() {
+    if (!('speechSynthesis' in window)) return
+    stopSpeaking()
+
+    const raw    = NARRATION[current] || ''
+    const text   = raw.replace(/\s+/g, ' ').trim()
+    const spans  = showSubtitle(text)
+    const words  = text.split(' ')
+
+    utterance           = new SpeechSynthesisUtterance(text)
+    utterance.rate      = 0.92
+    utterance.pitch     = 0.95
+    utterance.volume    = 1
+    if (selectedVoice) utterance.voice = selectedVoice
+
+    // Estimate duration: ~130 words per minute at rate 0.92
+    const wpm    = 130 * utterance.rate
+    const estMs  = (words.length / wpm) * 60000
+    startProgress(estMs)
+
+    // Highlight words as they're spoken
+    utterance.onboundary = e => {
+      if (e.name !== 'word') return
+      const idx = text.substring(0, e.charIndex).split(' ').length - 1
+      spans.forEach((s, i) => {
+        s.style.color   = i === idx ? '#5EEAD4' : 'inherit'
+        s.style.opacity = i < idx   ? '0.45' : i === idx ? '1' : '0.75'
+      })
+    }
+
+    utterance.onstart = () => duckMusic(true)
+
+    utterance.onend = () => {
+      stopProgress()
+      duckMusic(false)
+      spans.forEach(s => { s.style.color = 'inherit'; s.style.opacity = '0.45' })
+    }
+
+    utterance.onerror = () => { stopProgress(); duckMusic(false) }
+
+    speechSynthesis.speak(utterance)
+    replayBtn.style.opacity = '1'
+  }
+
+  function stopSpeaking() {
+    if ('speechSynthesis' in window) speechSynthesis.cancel()
+    stopProgress()
+    duckMusic(false)
+    subtitle.style.display = 'none'
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     AMBIENT MUSIC ENGINE  (Web Audio API — no external files)
+     Chord progression: Fmaj7 → Cmaj7 → Am7 → Gsus2
+     Auto-ducks to 18 % when narration starts, restores on end.
+  ═══════════════════════════════════════════════════════ */
+
+  // Frequencies (Hz) for each chord — stacked for a warm pad sound
+  const MUSIC_CHORDS = [
+    [174.6, 220.0, 261.6, 329.6, 392.0],  // Fmaj9:  F3 A3 C4 E4 G4
+    [130.8, 164.8, 196.0, 246.9, 329.6],  // Cmaj7:  C3 E3 G3 B3 E4
+    [110.0, 130.8, 164.8, 196.0, 261.6],  // Am7:    A2 C3 E3 G3 C4
+    [98.0,  146.8, 196.0, 246.9, 293.7],  // Gsus2:  G2 D3 G3 B3 D4
+  ]
+
+  let musicCtx   = null
+  let mGain      = null   // master volume (fade in/out)
+  let dGain      = null   // duck gain (voice vs music balance)
+  let musicOn    = false
+  let chordStep  = 0
+  let chordTimer = null
+
+  function _initMusic() {
+    const AC = window.AudioContext || window.webkitAudioContext
+    if (!AC) return false
+    musicCtx = new AC()
+
+    mGain = musicCtx.createGain()
+    dGain = musicCtx.createGain()
+
+    // Low-pass filter — removes harshness, keeps warmth
+    const lpf = musicCtx.createBiquadFilter()
+    lpf.type            = 'lowpass'
+    lpf.frequency.value = 1100
+    lpf.Q.value         = 0.4
+
+    // Gentle compressor — evens out volume across chord changes
+    const comp = musicCtx.createDynamicsCompressor()
+    comp.threshold.value = -22
+    comp.knee.value      = 8
+    comp.ratio.value     = 5
+    comp.attack.value    = 0.08
+    comp.release.value   = 0.4
+
+    // Simple stereo widener via two small delays
+    const delayL = musicCtx.createDelay(0.05)
+    const delayR = musicCtx.createDelay(0.05)
+    const merger = musicCtx.createChannelMerger(2)
+    delayL.delayTime.value = 0.013
+    delayR.delayTime.value = 0.027
+
+    mGain.connect(dGain)
+    dGain.connect(lpf)
+    lpf.connect(comp)
+    comp.connect(delayL); comp.connect(delayR)
+    delayL.connect(merger, 0, 0)
+    delayR.connect(merger, 0, 1)
+    merger.connect(musicCtx.destination)
+
+    mGain.gain.setValueAtTime(0, musicCtx.currentTime)
+    dGain.gain.setValueAtTime(1, musicCtx.currentTime)
+    return true
+  }
+
+  function _scheduleNote(freq, when, duration) {
+    // Two slightly detuned oscillators per note → warm chorus effect
+    const osc1 = musicCtx.createOscillator()
+    const osc2 = musicCtx.createOscillator()
+    const g    = musicCtx.createGain()
+
+    osc1.type = 'sine'
+    osc2.type = 'triangle'
+    osc1.frequency.value = freq
+    osc2.frequency.value = freq * 1.0028   // +4.8 cents — adds warmth without beating
+    osc2.detune.value    = -3
+
+    osc1.connect(g); osc2.connect(g)
+    g.connect(mGain)
+
+    // Scale amplitude — lower frequencies sit quieter so mid/highs sing
+    const vol = Math.min(0.11, 15 / freq)
+    g.gain.setValueAtTime(0, when)
+    g.gain.linearRampToValueAtTime(vol, when + 2.2)          // soft attack
+    g.gain.setValueAtTime(vol,         when + duration - 2.2)
+    g.gain.linearRampToValueAtTime(0,  when + duration)      // gentle release
+
+    osc1.start(when); osc1.stop(when + duration + 0.1)
+    osc2.start(when); osc2.stop(when + duration + 0.1)
+  }
+
+  function _playChord() {
+    if (!musicOn || !musicCtx) return
+    const freqs   = MUSIC_CHORDS[chordStep % MUSIC_CHORDS.length]
+    const now     = musicCtx.currentTime
+    const dur     = 10   // each chord rings for 10 s
+    const advance = 8    // next chord starts 8 s later (2 s overlap → smooth transition)
+
+    freqs.forEach(f => _scheduleNote(f, now, dur))
+    chordStep++
+    chordTimer = setTimeout(_playChord, advance * 1000)
+  }
+
+  function startMusic() {
+    if (!musicCtx && !_initMusic()) return
+    if (musicCtx.state === 'suspended') musicCtx.resume()
+    musicOn = true
+    chordStep = 0
+    mGain.gain.cancelScheduledValues(musicCtx.currentTime)
+    mGain.gain.setTargetAtTime(1, musicCtx.currentTime, 1.8)  // 5 s fade-in
+    _playChord()
+    const btn = document.getElementById('musicBtn')
+    if (btn) { btn.textContent = '🎵'; btn.style.opacity = '1'; btn.title = 'Stop music (M)' }
+  }
+
+  function stopMusic() {
+    musicOn = false
+    clearTimeout(chordTimer)
+    if (!mGain || !musicCtx) return
+    mGain.gain.cancelScheduledValues(musicCtx.currentTime)
+    mGain.gain.setTargetAtTime(0, musicCtx.currentTime, 1.0)  // 3 s fade-out
+    const btn = document.getElementById('musicBtn')
+    if (btn) { btn.textContent = '🎵'; btn.style.opacity = '0.4'; btn.title = 'Background music (M)' }
+  }
+
+  function toggleMusic() {
+    musicOn ? stopMusic() : startMusic()
+  }
+
+  // Called by speech engine — lowers music under the voice, restores after
+  function duckMusic(on) {
+    if (!dGain || !musicCtx) return
+    const t = musicCtx.currentTime
+    dGain.gain.cancelScheduledValues(t)
+    if (on) {
+      // Voice starts — quickly drop music to 18 %
+      dGain.gain.setTargetAtTime(0.18, t, 0.35)
+    } else {
+      // Voice ends — gradually restore music over ~3 s
+      dGain.gain.setTargetAtTime(1.0, t, 1.0)
+    }
+  }
+
+  // ── Toggle voice on/off ──────────────────────────────────
+  function toggleVoice() {
+    voiceEnabled = !voiceEnabled
+    voiceBtn.textContent  = voiceEnabled ? '🔊' : '🔇'
+    voiceBtn.style.opacity = voiceEnabled ? '1' : '0.65'
+    voiceBtn.title = voiceEnabled ? 'Mute narration (V)' : 'Play narration (V)'
+    if (voiceEnabled) {
+      speakCurrent()
+    } else {
+      stopSpeaking()
+    }
+  }
+</script>
+
+</body>
+</html>
