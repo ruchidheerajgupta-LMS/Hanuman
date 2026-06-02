@@ -35,11 +35,11 @@ export default function Hero() {
           <h1>
             The RTO Platform That{' '}
             <span className="accent">Does More</span>{' '}
-            Than CloudAssess — For Less.
+            — For Less.
           </h1>
           <p className="hero-sub">
             TrainTrack combines SMS, LMS, digital signatures, RPL, offline mobile assessments,
-            and AVETMISS NAT export in one platform. CloudAssess charges add-ons for half of
+            and AVETMISS NAT export in one platform. Legacy platforms charge add-ons for half of
             that. We include it all — from $199/month.
           </p>
           <div className="hero-ctas">

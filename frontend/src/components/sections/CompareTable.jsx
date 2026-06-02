@@ -112,10 +112,10 @@ export default function CompareTable() {
     <section className="section-sm compare-section">
       <div className="container">
         <div style={{ textAlign: 'center', maxWidth: 600, margin: '0 auto' }}>
-          <span className="eyebrow eyebrow-blue">Honest Comparison</span>
+          <span className="eyebrow eyebrow-blue">Platform Comparison</span>
           <h2>How TrainTrack stacks up.</h2>
           <p style={{ marginTop: '0.75rem', fontSize: 15 }}>
-            We checked every competitor's feature list and pricing page. Here's what we found.
+            We reviewed leading Australian RTO platforms on features, pricing, and compliance. Here's what we found.
           </p>
         </div>
         <div className="compare-table-wrap">
@@ -124,8 +124,8 @@ export default function CompareTable() {
               <tr>
                 <th>Feature</th>
                 <th className="tt-col">TrainTrack</th>
-                <th>Cloud Assess</th>
-                <th>aXcelerate</th>
+                <th>Platform A</th>
+                <th>Platform B</th>
               </tr>
             </thead>
             <tbody>
@@ -150,7 +150,7 @@ export default function CompareTable() {
           </table>
         </div>
         <p style={{ fontSize: 12, textAlign: 'center', marginTop: 12, opacity: 0.6 }}>
-          Based on publicly available information, May 2026. Always verify current competitor pricing and features directly.
+          Based on publicly available information, June 2026. Always verify current platform pricing and features directly.
         </p>
       </div>
     </section>
