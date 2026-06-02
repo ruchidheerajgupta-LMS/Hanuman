@@ -6,8 +6,8 @@ const FEATURES = [
   },
   {
     pain: 'Pain: Chasing USIs before census cuts off funding',
-    title: 'Automated USI Verification',
-    desc: 'Every enrolment is verified in real-time via the DET API. Students missing a USI receive automated reminder sequences. Your register never holds an unverified USI the night before a funding claim.',
+    title: 'USI Collection & Compliance Tracking',
+    desc: 'Every student record captures and stores their USI at enrolment. Dashboard alerts flag any active student with a missing or unverified USI. Automated reminder sequences chase students before your funding deadline — so your register is clean when it counts.',
   },
   {
     pain: 'Pain: Assessment compliance without a paper trail',
@@ -25,9 +25,9 @@ const FEATURES = [
     desc: 'Students upload evidence mapped to each unit element directly in the portal. Trainers review all evidence in a structured review screen, record an outcome per element (Sufficient / Insufficient), then make a formal determination: Granted, Not Granted, or Partial RPL. Full audit trail attached to the student record.',
   },
   {
-    pain: 'Pain: Assessments impossible on construction sites with no internet',
-    title: 'Offline-Capable Mobile App (PWA)',
-    desc: 'TrainTrack installs as a Progressive Web App on any Android or iOS device — no app store required. Students fill in assessments and trainers mark attendance offline. Submissions queue locally and sync automatically the moment the device reconnects. Built for trade, construction, and remote-site RTOs.',
+    pain: 'Pain: Assessments on mobile devices with patchy connectivity',
+    title: 'Mobile-Responsive Assessment Portal',
+    desc: 'TrainTrack is fully mobile-responsive — students complete assessments and trainers mark attendance from any smartphone or tablet without installing an app. The interface is optimised for touch screens and works across all modern mobile browsers, on both iOS and Android.',
   },
   {
     pain: 'Pain: Trainer files out of date at the worst possible moment',

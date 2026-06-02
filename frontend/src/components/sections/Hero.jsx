@@ -30,7 +30,7 @@ export default function Hero() {
         <div className="hero-copy">
           <div className="hero-badge">
             <div className="hero-badge-dot" />
-            ASQA 2025 Ready &middot; Works Offline &middot; Built for Australian RTOs
+            ASQA 2025 Ready &middot; Multi-Tenant &middot; Built for Australian RTOs
           </div>
           <h1>
             The RTO Platform That{' '}
@@ -38,7 +38,7 @@ export default function Hero() {
             — For Less.
           </h1>
           <p className="hero-sub">
-            TrainTrack combines SMS, LMS, digital signatures, RPL, offline mobile assessments,
+            TrainTrack combines SMS, LMS, digital signatures, RPL, trainer currency tracking,
             and AVETMISS NAT export in one platform. Legacy platforms charge add-ons for half of
             that. We include it all — from $199/month.
           </p>

@@ -1,14 +1,14 @@
 const PROBLEMS = [
   { icon: '📊', title: 'Manual AVETMISS exports', desc: 'Hours fixing NAT file errors the night before the NCVER deadline. Every. Single. Year.' },
   { icon: '✍️', title: 'No compliant digital signatures', desc: 'Paper cover sheets, scanned PDFs, emailed consent forms. None of it holds up under an ASQA audit.' },
-  { icon: '🏗️', title: 'Assessments impossible on-site', desc: "Students on construction sites, mines, or aged-care facilities. No internet. Paper forms that get lost before they reach the office." },
+  { icon: '🧑‍🏫', title: 'Trainer currency gaps at audit time', desc: 'Expired TAE qualifications, missing industry evidence, no structured PD log. An ASQA finding that costs your registration.' },
   { icon: '📋', title: 'RPL managed over email', desc: 'Evidence attached to nothing. No structured determination. No audit trail. An ASQA finding waiting to happen.' },
 ]
 
 const SOLUTIONS = [
   'SMS + LMS unified — one record, zero re-entry.',
   'Digital signatures on every assessment — student and assessor.',
-  'Offline PWA — assessments submitted without internet, auto-synced.',
+  'Trainer currency tracking — 90/60/30-day expiry alerts.',
   'RPL: structured evidence upload + formal trainer determination.',
   'AVETMISS NAT export with pre-submission validation.',
   'Branded PDF certificates auto-issued on competency.',
@@ -26,9 +26,8 @@ export default function ProblemSection() {
             <span className="eyebrow">The RTO Reality</span>
             <h2>Sound familiar?</h2>
             <p style={{ marginTop: '1rem', maxWidth: 480 }}>
-              Your assessments are on paper. Your RPL evidence is in an email thread. Your students
-              on construction sites can't submit work because there's no signal. And your ASQA
-              evidence pack is a folder of screenshots.
+              Your assessments are on paper. Your RPL evidence is in an email thread. Your trainer
+              currency files are out of date. And your ASQA evidence pack is a folder of screenshots.
             </p>
             <div className="problem-items">
               {PROBLEMS.map((p, i) => (

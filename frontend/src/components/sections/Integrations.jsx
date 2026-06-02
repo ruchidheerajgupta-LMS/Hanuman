@@ -1,6 +1,6 @@
 const INTEGRATIONS = [
   { abbr: 'TGA', name: 'Training.gov.au', desc: 'Live scope sync. Out-of-scope enrolment warnings.', badge: 'Native', badgeBg: 'var(--teal-light)', badgeColor: 'var(--teal-mid)' },
-  { abbr: 'USI', name: 'USI Registry', desc: 'Real-time DET API verification at enrolment.', badge: 'Native', badgeBg: 'var(--teal-light)', badgeColor: 'var(--teal-mid)' },
+  { abbr: 'USI', name: 'USI Registry', desc: 'USI collection, status tracking, and missing-USI alerts.', badge: 'Native', badgeBg: 'var(--teal-light)', badgeColor: 'var(--teal-mid)' },
   { abbr: 'NCVER', name: 'NCVER AVETMISS', desc: 'All NAT formats. State variations supported.', badge: 'Native', badgeBg: 'var(--teal-light)', badgeColor: 'var(--teal-mid)' },
   { abbr: 'Xero', name: 'Xero', desc: 'Invoices, payment plans, credit notes auto-sync.', badge: 'Native', badgeBg: 'var(--teal-light)', badgeColor: 'var(--teal-mid)' },
   { abbr: 'MYOB', name: 'MYOB', desc: 'Two-way sync. BAS and payroll chart of accounts.', badge: 'Native', badgeBg: 'var(--teal-light)', badgeColor: 'var(--teal-mid)' },

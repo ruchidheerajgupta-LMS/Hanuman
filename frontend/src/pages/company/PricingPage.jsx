@@ -8,7 +8,7 @@ const TIERS = [
     features: [
       'Full SMS + LMS, unified database',
       'AVETMISS 8 export with validation',
-      'Automated USI verification',
+      'USI collection and status tracking',
       'Trainer currency tracking',
       'Digital certificates + QR codes',
       'Branded online enrolment engine',

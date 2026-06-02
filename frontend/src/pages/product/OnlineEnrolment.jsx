@@ -4,7 +4,7 @@ import PageLayout from '../../components/layout/PageLayout'
 export default function OnlineEnrolment() {
   const steps = [
     { title: 'Student fills out the form', desc: 'Branded, mobile-friendly enrolment form captures all AVETMISS-required fields, USI, LLN declaration, and payment details.' },
-    { title: 'Automatic validation', desc: 'USI is verified against the USI Registry, address is standardised, and duplicate detection flags existing students.' },
+    { title: 'Automatic validation', desc: 'USI is collected and recorded against the student profile, address is standardised, and duplicate detection flags existing students.' },
     { title: 'Enrolment created instantly', desc: 'Approved enrolments auto-create student profiles, assign to the correct course/cohort, and trigger welcome emails.' },
     { title: 'Payment processed', desc: 'Integrated Stripe payments handle deposits, instalments, and VET Student Loans. Receipts sent automatically.' },
   ]
@@ -21,7 +21,7 @@ export default function OnlineEnrolment() {
       <div className="page-content">
         <span className="page-tag page-tag-teal">CORE MODULE</span>
         <h2>From enquiry to enrolled — in minutes, not days</h2>
-        <p>Replace PDF forms and manual data entry with a sleek online enrolment experience that captures every AVETMISS field, validates USIs in real-time, and creates student records automatically.</p>
+        <p>Replace PDF forms and manual data entry with a sleek online enrolment experience that captures every AVETMISS field, collects and records USIs, and creates student records automatically.</p>
       </div>
 
       <div className="page-card">

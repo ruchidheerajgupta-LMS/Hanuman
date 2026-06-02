@@ -29,7 +29,7 @@ const ROWS = [
   },
   {
     category: 'Compliance',
-    feature: 'Automated USI verification (DET API)',
+    feature: 'USI collection, tracking & missing USI alerts',
     tt:  { type: 'yes' },
     ca:  { type: 'yes' },
     axc: { type: 'yes' },
@@ -57,10 +57,10 @@ const ROWS = [
   },
   {
     category: 'Mobile',
-    feature: 'Offline PWA — submit assessments without internet',
+    feature: 'Mobile-responsive — assessments on any device',
     tt:  { type: 'yes' },
-    ca:  { type: 'no',   text: '✗ Online only' },
-    axc: { type: 'no',   text: '✗ Online only' },
+    ca:  { type: 'yes' },
+    axc: { type: 'part', text: 'Limited' },
   },
   {
     category: 'Operations',

@@ -5,7 +5,7 @@ const PILLARS = [
     desc: 'Always audit-ready. Every workflow maps to Standards for RTOs 2025.',
     items: [
       'AVETMISS 8 NAT export with pre-submission validation',
-      'Automated USI verification via DET API',
+      'USI collection, status tracking, and reminder workflows',
       'Trainer currency alerts & Standards 1.13–1.16 evidence report',
       'Digital signatures — student + assessor on every assessment',
       'RPL workflow with structured trainer determination',
@@ -22,7 +22,7 @@ const PILLARS = [
       'Zero data silos between SMS and LMS',
       'Online enrolment flows directly into training plan',
       'Observation checklists for workplace and practical delivery',
-      'Offline-capable PWA — works on job sites with no internet',
+      'Mobile-responsive — works on any device, anywhere',
       'Multi-tenant: manage multiple RTO entities from one account',
       'Stripe payment processing at enrolment',
     ],

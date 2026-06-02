@@ -3,10 +3,10 @@ import PageLayout from '../../components/layout/PageLayout'
 
 export default function UsiValidation() {
   const steps = [
-    { title: 'Student enters their USI', desc: 'During online enrolment or manual entry, the student provides their 10-character Unique Student Identifier.' },
-    { title: 'Real-time API verification', desc: 'TrainTrack queries the USI Registry System API to verify the USI exists and matches the student\'s name and date of birth.' },
-    { title: 'Instant result', desc: 'If valid, the USI is locked to the student profile. If invalid, the student is prompted to correct their details or create a new USI.' },
-    { title: 'Ongoing compliance', desc: 'TrainTrack ensures no enrolment or outcome is reported to NCVER without a verified USI — preventing data rejections at lodgement.' },
+    { title: 'Student provides their USI', desc: 'During online enrolment or manual entry, the student provides their 10-character Unique Student Identifier.' },
+    { title: 'USI recorded on the student profile', desc: 'TrainTrack stores the USI against the student record and marks it as collected. Admin staff can then verify the USI manually via the USI Registry portal and update the status.' },
+    { title: 'Status tracked in the dashboard', desc: 'Each student record shows a USI status — Collected, Verified, or Missing. Dashboard alerts flag any active student without a recorded USI.' },
+    { title: 'Ongoing compliance', desc: 'TrainTrack flags any student with a missing USI before AVETMISS export, preventing data rejections at NCVER lodgement.' },
   ]
 
   return (
@@ -28,7 +28,7 @@ export default function UsiValidation() {
       </div>
 
       <div className="page-card">
-        <h3>How TrainTrack validates USIs</h3>
+        <h3>How TrainTrack handles USI compliance</h3>
         {steps.map((s, i) => (
           <div className="page-step" key={i}>
             <div className="page-step-num">{i + 1}</div>
@@ -42,10 +42,10 @@ export default function UsiValidation() {
 
       <div className="page-feature-grid">
         {[
-          { icon: '⚡', bg: 'var(--teal-light)', title: 'Real-Time Verification', desc: 'USIs are verified against the registry in under 2 seconds — no batch processing or manual checks required.' },
-          { icon: '🛡️', bg: 'var(--blue-light)', title: 'Bulk Validation', desc: 'Migrating from another system? Upload a CSV and validate hundreds of USIs in one batch operation.' },
-          { icon: '🔔', bg: 'var(--amber-light)', title: 'Missing USI Alerts', desc: 'Dashboard warnings flag any active student without a verified USI, ensuring no one slips through the cracks.' },
-          { icon: '📋', bg: 'var(--coral-light)', title: 'USI Exemption Tracking', desc: 'Track students with valid USI exemptions (e.g., international students on certain visa types) with documentation.' },
+          { icon: '📋', bg: 'var(--teal-light)', title: 'USI Status Tracking', desc: 'Every student record shows USI status — Collected, Verified, or Missing. No student slips through.' },
+          { icon: '🔔', bg: 'var(--amber-light)', title: 'Missing USI Alerts', desc: 'Dashboard warnings flag any active student without a recorded USI, ensuring your register is complete before lodgement.' },
+          { icon: '🛡️', bg: 'var(--blue-light)', title: 'AVETMISS Export Guard', desc: 'TrainTrack blocks AVETMISS export for students with missing USIs — preventing NCVER rejections before they happen.' },
+          { icon: '📁', bg: 'var(--coral-light)', title: 'USI Exemption Tracking', desc: 'Track students with valid USI exemptions (e.g., international students on certain visa types) with documentation.' },
         ].map((f, i) => (
           <div className="page-feature-card" key={i}>
             <div className="page-feature-icon" style={{ background: f.bg }}>{f.icon}</div>
@@ -56,8 +56,8 @@ export default function UsiValidation() {
       </div>
 
       <div className="page-cta-box">
-        <h2>Automate USI validation</h2>
-        <p>Never issue a qualification without a verified USI again.</p>
+        <h2>Stay on top of USI compliance</h2>
+        <p>Keep your student register complete and AVETMISS-ready at all times.</p>
         <Link to="/#audit" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
