@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2, AlertCircle, CheckCircle2, GraduationCap, Mail } from 'lucide-react'
+import { Loader2, AlertCircle, GraduationCap, KeyRound, Copy, Check } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import api from '../api/client'
@@ -9,22 +9,27 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
-  const [sent, setSent] = useState(false)
+  const [result, setResult] = useState(null)   // { temp_password, first_name }
+  const [copied, setCopied] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
     setSubmitting(true)
-
     try {
-      await api.post('/gateway/forgot-password', { email })
-      setSent(true)
+      const res = await api.post('/gateway/forgot-password', { email })
+      setResult(res.data)
     } catch (err) {
-      const msg = err.response?.data?.error || 'Something went wrong. Please try again.'
-      setError(msg)
+      setError(err.response?.data?.error || 'Something went wrong. Please try again.')
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(result.temp_password)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   return (
@@ -38,29 +43,55 @@ export default function ForgotPassword() {
               <GraduationCap size={28} strokeWidth={1.8} />
             </div>
             <h2>Reset Your Password</h2>
-            <p>Enter your email address and we&rsquo;ll send instructions to reset your password.</p>
+            {!result && <p>Enter your account email to receive a temporary password.</p>}
           </div>
 
-          {sent ? (
-            <div className="manage-reset-success">
-              <div className="manage-reset-success-icon">
-                <CheckCircle2 size={40} strokeWidth={1.5} />
+          {result ? (
+            /* ── Success: show the temp password ── */
+            <div style={{ padding: '4px 0' }}>
+              <div style={{
+                background: '#f0fdf4', border: '1px solid #86efac',
+                borderRadius: 10, padding: '14px 16px', marginBottom: 18,
+              }}>
+                <div style={{ fontWeight: 700, color: '#166534', marginBottom: 4 }}>
+                  Hi {result.first_name}, your temporary password is ready
+                </div>
+                <div style={{ fontSize: 13, color: '#15803d' }}>
+                  Use it to sign in below — you'll be prompted to set a new password immediately.
+                </div>
               </div>
-              <h3>Check Your Email</h3>
-              <p>
-                If an account exists for <strong>{email}</strong>, your RTO administrator
-                has been notified and will reset your password. You&rsquo;ll receive
-                a temporary password via email shortly.
-              </p>
-              <p className="manage-reset-note">
-                <Mail size={14} />
-                If you don&rsquo;t receive an email, please contact your RTO administrator directly.
-              </p>
-              <Link to="/manage" className="manage-login-btn" style={{ textDecoration: 'none', marginTop: 16 }}>
-                Back to Sign In
+
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                background: '#f8fafc', border: '1px solid #e2e8f0',
+                borderRadius: 8, padding: '12px 14px', marginBottom: 20,
+              }}>
+                <KeyRound size={16} style={{ color: '#64748b', flexShrink: 0 }} />
+                <span style={{ fontFamily: 'monospace', fontSize: 16, fontWeight: 700, letterSpacing: '0.08em', flex: 1 }}>
+                  {result.temp_password}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    padding: '4px 10px', borderRadius: 6,
+                    border: '1px solid #e2e8f0',
+                    background: copied ? '#f0fdf4' : '#fff',
+                    cursor: 'pointer', fontSize: 12, fontWeight: 600,
+                    color: copied ? '#166534' : '#475569',
+                  }}
+                >
+                  {copied ? <><Check size={13} /> Copied</> : <><Copy size={13} /> Copy</>}
+                </button>
+              </div>
+
+              <Link to="/manage" className="manage-login-btn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
+                Go to Sign In
               </Link>
             </div>
           ) : (
+            /* ── Request form ── */
             <form onSubmit={handleSubmit} className="manage-login-form">
               {error && (
                 <div className="manage-login-error">
@@ -83,22 +114,14 @@ export default function ForgotPassword() {
                 />
               </div>
 
-              <button
-                type="submit"
-                className="manage-login-btn"
-                disabled={submitting}
-              >
-                {submitting ? (
-                  <><Loader2 size={18} className="spin" /> Sending...</>
-                ) : (
-                  'Send Reset Instructions'
-                )}
+              <button type="submit" className="manage-login-btn" disabled={submitting}>
+                {submitting
+                  ? <><Loader2 size={18} className="spin" /> Checking...</>
+                  : 'Reset Password'}
               </button>
 
               <div style={{ textAlign: 'center', marginTop: 12 }}>
-                <Link to="/manage" className="manage-forgot-link">
-                  &larr; Back to Sign In
-                </Link>
+                <Link to="/manage" className="manage-forgot-link">&larr; Back to Sign In</Link>
               </div>
             </form>
           )}

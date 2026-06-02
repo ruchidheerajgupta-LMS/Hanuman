@@ -7,9 +7,9 @@ const STUDENTS = [
 
 const STATS = [
   { val: '847', label: 'Active Students', delta: '↑ 12 this week', cls: 'db-stat-delta' },
-  { val: '3', label: 'AVETMISS Issues', delta: '⚠ Needs review', cls: 'db-stat-warn' },
+  { val: '0', label: 'AVETMISS Issues', delta: '✓ Export ready', cls: 'db-stat-delta' },
   { val: '98%', label: 'USI Validated', delta: '↑ from 91%', cls: 'db-stat-delta' },
-  { val: '14', label: 'Certs Due Today', delta: 'Auto-issue on', cls: 'db-stat-delta' },
+  { val: '14', label: 'Certs Issued Today', delta: 'Auto-generated', cls: 'db-stat-delta' },
 ]
 
 const AVATARS = [
@@ -30,25 +30,25 @@ export default function Hero() {
         <div className="hero-copy">
           <div className="hero-badge">
             <div className="hero-badge-dot" />
-            Built for Australian RTOs &middot; ASQA 2025 Ready
+            ASQA 2025 Ready &middot; Works Offline &middot; Built for Australian RTOs
           </div>
           <h1>
-            The RTO Platform Built Around{' '}
-            <span className="accent">Compliance First</span>,{' '}
-            <span className="strikethrough">Not Compliance Last</span>.
+            The RTO Platform That{' '}
+            <span className="accent">Does More</span>{' '}
+            Than CloudAssess — For Less.
           </h1>
           <p className="hero-sub">
-            TrainTrack merges your SMS and LMS into one ASQA-aligned platform — so your team stops
-            re-entering data and starts actually training students. AVETMISS exports in two clicks.
-            USI validated automatically. Trainer currency tracked for you.
+            TrainTrack combines SMS, LMS, digital signatures, RPL, offline mobile assessments,
+            and AVETMISS NAT export in one platform. CloudAssess charges add-ons for half of
+            that. We include it all — from $199/month.
           </p>
           <div className="hero-ctas">
             <button className="btn-primary" onClick={() => scrollTo('audit')}>
               📋 Book Free 15-Min Compliance Audit
             </button>
-            <button className="btn-ghost" onClick={() => scrollTo('dashboard-demo')}>
+            <a href="/pitch-deck.html" target="_blank" rel="noopener noreferrer" className="btn-ghost">
               ▶ Watch Product Tour
-            </button>
+            </a>
           </div>
           <div className="hero-trust">
             <div className="trust-avatars">

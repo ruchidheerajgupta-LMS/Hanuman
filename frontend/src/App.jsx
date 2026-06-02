@@ -29,6 +29,7 @@ import VsEskilled from './pages/company/VsEskilled'
 import PricingPage from './pages/company/PricingPage'
 import Blog from './pages/company/Blog'
 import Contact from './pages/company/Contact'
+import PitchDeck from './pages/PitchDeck'
 
 export default function App() {
   return (
@@ -60,6 +61,9 @@ export default function App() {
         <Route path="/company/pricing" element={<PricingPage />} />
         <Route path="/company/blog" element={<Blog />} />
         <Route path="/company/contact" element={<Contact />} />
+
+        {/* Product tour / pitch deck */}
+        <Route path="/pitch-deck" element={<PitchDeck />} />
 
         {/* Management */}
         <Route path="/manage" element={<ManageLogin />} />

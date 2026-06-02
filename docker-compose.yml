@@ -275,35 +275,6 @@ services:
         max-file: "3"
 
   # --------------------------------------------------------------------------
-  # Locust — Load Testing (web UI on port 8089)
-  # --------------------------------------------------------------------------
-  locust:
-    image: locustio/locust
-    container_name: hanuman-locust
-    restart: unless-stopped
-    ports:
-      - "8099:8089"
-    volumes:
-      - ./loadtest:/mnt/locust:ro
-    command: -f /mnt/locust/locustfile.py --host=http://nginx
-    networks:
-      - frontend-net
-      - backend-net
-    depends_on:
-      nginx:
-        condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.5'
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  # --------------------------------------------------------------------------
   # Test Runner — pytest integration tests (run on-demand)
   # Usage: docker compose run --rm test-runner
   # --------------------------------------------------------------------------

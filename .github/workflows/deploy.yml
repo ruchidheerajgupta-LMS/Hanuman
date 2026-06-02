@@ -1,0 +1,53 @@
+# =============================================================================
+# Hanuman Marketing Portal — GitHub Actions CI/CD
+# Deploys to UpCloud on every push to master
+#
+# Required GitHub Secrets (Settings → Secrets → Actions):
+#   UPCLOUD_HOST     — server IP or hostname
+#   UPCLOUD_USER     — SSH user (e.g. deploy)
+#   UPCLOUD_SSH_KEY  — private SSH key (contents of ~/.ssh/id_ed25519)
+#   UPCLOUD_PORT     — SSH port (default 22)
+# =============================================================================
+name: Deploy to UpCloud
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      skip_build:
+        description: 'Skip Docker build (restart only)'
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    name: Deploy Hanuman
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host:     ${{ secrets.UPCLOUD_HOST }}
+          username: ${{ secrets.UPCLOUD_USER }}
+          key:      ${{ secrets.UPCLOUD_SSH_KEY }}
+          port:     ${{ secrets.UPCLOUD_PORT || 22 }}
+          timeout:  12m
+          script: |
+            set -e
+            cd /opt/hanuman
+            git pull origin master
+            ${{ inputs.skip_build == 'true' && './deploy.sh --skip-build' || './deploy.sh' }}
+
+      - name: Notify success
+        if: success()
+        run: echo "✅ Hanuman deployed successfully at $(date)"
+
+      - name: Notify failure
+        if: failure()
+        run: echo "❌ Hanuman deployment failed — check server logs at /var/log/hanuman-deploy.log"

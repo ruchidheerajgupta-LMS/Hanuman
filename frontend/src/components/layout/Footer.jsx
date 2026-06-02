@@ -40,6 +40,7 @@ export default function Footer() {
           <div>
             <div className="footer-col-title">Company</div>
             <Link to="/company/about" className="footer-link">About TrainTrack</Link>
+            <a href="/pitch-deck.html" target="_blank" rel="noopener noreferrer" className="footer-link">Product Tour</a>
             <Link to="/company/vs-cloud-assess" className="footer-link">vs Cloud Assess</Link>
             <Link to="/company/vs-eskilled" className="footer-link">vs eSkilled</Link>
             <Link to="/company/pricing" className="footer-link">Pricing</Link>

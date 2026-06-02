@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, make_response
 import requests as http_requests
 import psycopg2
 import psycopg2.extras
@@ -81,7 +81,7 @@ def gateway_login():
         resp = http_requests.post(
             f'{auth_url}/api/auth/login',
             json=login_payload,
-            timeout=10,
+            timeout=30,
             verify=False,
         )
     except http_requests.RequestException as e:
@@ -111,25 +111,33 @@ def gateway_login():
         except Exception as e:
             current_app.logger.error(f'Failed to fetch tenant for login: {e}')
 
-    # Forward auth cookies from TrainTrack to the client
-    response = jsonify({
+    # ✓ FIXED: Relay cookies with correct domain for cross-port access
+    # cookies sent between localhost:9080 (Hanuman) and localhost:3000 (TrainTrack)
+    response = make_response(jsonify({
         'success': True,
         'data': {
             'user': user,
             'tenant': tenant_info,
+            'must_change_password': auth_data.get('data', {}).get('must_change_password', False) or user.get('must_change_password', False),
+            'traintrack_url': current_app.config['TRAINTRACK_FRONTEND_URL'],
         }
-    })
-
-    # Relay Set-Cookie headers from TrainTrack auth response
+    }))
+    
+    # Extract JWT cookie(s) from auth response and re-set with localhost domain
+    # resp.cookies is a dict-like object with cookie names and values
     for cookie_name, cookie_value in resp.cookies.items():
+        # Re-set cookie with correct attributes for cross-port access
         response.set_cookie(
             cookie_name,
-            cookie_value,
-            httponly='access_token' in cookie_name,
-            secure=True,
-            samesite='Lax',
+            value=cookie_value,
+            domain='localhost',  # ✓ Works across all localhost ports
             path='/',
+            httponly=True,  # ✓ All JWT cookies should be httponly
+            secure=False,   # ✓ False for http:// (development). Set True for production with https://
+            samesite='Lax',  # ✓ Allow same-site requests
         )
+        
+        current_app.logger.info(f'Set cookie {cookie_name} with domain=localhost')
 
     return response, 200
 
@@ -157,10 +165,9 @@ def forgot_password():
         user = cur.fetchone()
 
         if not user:
-            # Return success even if user doesn't exist (no user enumeration)
             cur.close()
             conn.close()
-            return jsonify({'success': True, 'message': 'If an account exists, reset instructions have been sent.'}), 200
+            return jsonify({'success': False, 'error': 'No account found with this email address.'}), 404
 
         # Generate a temporary password
         alphabet = string.ascii_letters + string.digits + '!@#$'
@@ -173,18 +180,78 @@ def forgot_password():
             (hashed, user['id'])
         )
         conn.commit()
-
-        # Log the temp password for admin reference (in production, send via email)
-        current_app.logger.info(f"Password reset for {email}: temporary password generated (check admin panel or email delivery)")
-
         cur.close()
         conn.close()
 
+        current_app.logger.info(f"Password reset for {email}: temporary password issued")
+
         return jsonify({
             'success': True,
-            'message': 'If an account exists, reset instructions have been sent.'
+            'temp_password': temp_password,
+            'first_name': user['first_name'],
         }), 200
 
     except Exception as e:
         current_app.logger.error(f'Password reset failed: {e}')
         return jsonify({'success': False, 'error': 'Password reset service unavailable'}), 500
+
+
+@gateway_bp.route('/change-password', methods=['POST'])
+def change_password():
+    """Change password for a user who must_change_password.
+
+    Accepts email + current_password (to verify identity) + new_password.
+    Validates new password rules, hashes and saves, clears must_change_password flag.
+    """
+    data = request.get_json()
+    email = (data.get('email') or '').lower().strip()
+    current_pw = data.get('current_password', '')
+    new_pw = data.get('new_password', '')
+
+    if not email or not current_pw or not new_pw:
+        return jsonify({'success': False, 'error': 'Email, current password, and new password are required'}), 400
+
+    # Password rules: min 8 chars, at least 1 uppercase, 1 lowercase, 1 digit
+    if len(new_pw) < 8:
+        return jsonify({'success': False, 'error': 'Password must be at least 8 characters'}), 400
+    import re
+    if not re.search(r'[A-Z]', new_pw):
+        return jsonify({'success': False, 'error': 'Password must contain at least one uppercase letter'}), 400
+    if not re.search(r'[a-z]', new_pw):
+        return jsonify({'success': False, 'error': 'Password must contain at least one lowercase letter'}), 400
+    if not re.search(r'[0-9]', new_pw):
+        return jsonify({'success': False, 'error': 'Password must contain at least one number'}), 400
+
+    try:
+        conn = _get_db_conn()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        cur.execute("SELECT id, password_hash, must_change_password FROM users WHERE email = %s AND is_active = TRUE", (email,))
+        user = cur.fetchone()
+
+        if not user:
+            cur.close()
+            conn.close()
+            return jsonify({'success': False, 'error': 'Invalid credentials'}), 401
+
+        # Verify current (temporary) password
+        if not bcrypt.checkpw(current_pw.encode('utf-8'), user['password_hash'].encode('utf-8')):
+            cur.close()
+            conn.close()
+            return jsonify({'success': False, 'error': 'Current password is incorrect'}), 401
+
+        # Hash and save new password, clear must_change_password
+        hashed = bcrypt.hashpw(new_pw.encode('utf-8'), bcrypt.gensalt(12)).decode('utf-8')
+        cur.execute(
+            "UPDATE users SET password_hash = %s, must_change_password = FALSE, updated_at = NOW() WHERE id = %s",
+            (hashed, user['id'])
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return jsonify({'success': True, 'message': 'Password changed successfully'}), 200
+
+    except Exception as e:
+        current_app.logger.error(f'Change password failed: {e}')
+        return jsonify({'success': False, 'error': 'Password change service unavailable'}), 500

@@ -16,10 +16,12 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    host: '0.0.0.0',  // ✓ Listen on all interfaces for Docker
     proxy: {
       '/api': {
-        target: 'http://localhost:80',
+        target: 'http://nginx:80',  // ✓ Use service name in Docker network
         changeOrigin: true,
+        secure: false,
       },
     },
   },

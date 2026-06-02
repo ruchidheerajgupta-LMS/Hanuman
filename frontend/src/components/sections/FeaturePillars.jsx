@@ -2,27 +2,29 @@ const PILLARS = [
   {
     cls: 'p1', icon: '🛡️', iconCls: 'icon-teal',
     title: 'Compliance Mastery',
-    desc: 'Always audit-ready. Standards for RTOs 2025 mapped to every workflow.',
+    desc: 'Always audit-ready. Every workflow maps to Standards for RTOs 2025.',
     items: [
-      'AVETMISS 8 export with pre-submission validation',
+      'AVETMISS 8 NAT export with pre-submission validation',
       'Automated USI verification via DET API',
-      'Trainer currency alerts & evidence tracking',
-      'ASQA audit evidence pack generator',
-      'Standards for RTOs 2025 clause mapping',
-      'Live training.gov.au scope sync',
+      'Trainer currency alerts & Standards 1.13–1.16 evidence report',
+      'Digital signatures — student + assessor on every assessment',
+      'RPL workflow with structured trainer determination',
+      'ASQA audit evidence pack generator (clause 1–8)',
+      'Live training.gov.au scope sync — blocks off-scope enrolments',
     ],
   },
   {
     cls: 'p2', icon: '🔗', iconCls: 'icon-blue',
     title: 'All-in-One Advantage',
-    desc: 'Your SMS and LMS share one database. Enrol once. Everything updates everywhere.',
+    desc: 'SMS and LMS share one database. Enrol once. Everything updates everywhere.',
     items: [
       'Unified student record — single source of truth',
       'Zero data silos between SMS and LMS',
-      'Online enrolment flows directly to training plan',
-      'Xero / MYOB financial sync built-in',
+      'Online enrolment flows directly into training plan',
+      'Observation checklists for workplace and practical delivery',
+      'Offline-capable PWA — works on job sites with no internet',
+      'Multi-tenant: manage multiple RTO entities from one account',
       'Stripe payment processing at enrolment',
-      'Mobile-first learner portal, works offline',
     ],
   },
   {
@@ -31,11 +33,12 @@ const PILLARS = [
     desc: 'Train faster. Certify smarter. Stop doing manually what software should handle.',
     items: [
       'AI-assisted assessment grading with audit trail',
-      'Auto-certificates with QR tamper-proof codes',
-      'Digital attendance + geo-verification',
-      'Branded online enrolment engine',
-      'Automated payment plans & fee reminders',
-      'Smart reporting dashboard — real-time KPIs',
+      'Branded PDF certificates auto-issued on competency',
+      'Automated notifications — graded, enrolled, attendance alerts',
+      'Cohort broadcast: email + SMS to whole intake in one click',
+      'Digital attendance with optional geo-location verification',
+      'Real-time analytics dashboard — completion, attendance, AVETMISS status',
+      'Smart reporting: per-trainer, per-qualification, per-intake',
     ],
   },
 ]
@@ -44,10 +47,13 @@ export default function FeaturePillars() {
   return (
     <section className="section features-section" id="features">
       <div className="container">
-        <div style={{ textAlign: 'center', maxWidth: 600, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto' }}>
           <span className="eyebrow">One Platform. Every Obligation Covered.</span>
           <h2>Three pillars. Zero compromises.</h2>
-          <p style={{ marginTop: '1rem' }}>Every compliance obligation, operational process, and learner interaction — handled in one place.</p>
+          <p style={{ marginTop: '1rem' }}>
+            Every compliance obligation, operational process, and learner interaction — handled in
+            one place. No separate SMS. No separate LMS. No separate assessment portal.
+          </p>
         </div>
         <div className="pillar-grid">
           {PILLARS.map((p, i) => (
