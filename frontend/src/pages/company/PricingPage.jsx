@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom'
 import PageLayout from '../../components/layout/PageLayout'
 
+// Set to true when pricing is ready to publish
+const SHOW_PRICING = false
+
 const TIERS = [
   {
     name: 'Compliance Core', dollar: '$299', period: '/ month',
-    note: 'Up to 100 active enrolments. Additional units at $2.50 each. No lock-in contract.',
+    note: 'Up to 100 active enrolments. No lock-in contract.',
     features: [
       'Full SMS + LMS, unified database',
       'AVETMISS 8 export with validation',
@@ -17,7 +20,7 @@ const TIERS = [
   },
   {
     name: 'Growth', dollar: '$149', period: '/ month base', featured: true,
-    note: '+ $1.80 per active enrolment unit. Pay only for students you teach. Scales automatically.',
+    note: 'Pay only for students you teach. Scales automatically.',
     features: [
       'Everything in Compliance Core',
       'AI-assisted assessment grading',
@@ -50,6 +53,7 @@ const FAQ = [
   { q: 'Is there a setup fee?', a: 'No setup fee for Compliance Core or Growth plans. Enterprise includes white-glove onboarding and data migration.' },
   { q: 'What about data migration?', a: 'We provide free CSV import tools for all plans. Enterprise customers get assisted migration with dedicated support.' },
   { q: 'Where is my data hosted?', a: 'All data is hosted in Australia on ISO 27001 certified infrastructure. Data never leaves the country.' },
+  { q: 'How do I get pricing?', a: 'Pricing is tailored to your RTO\'s size and delivery model. Get in touch and we\'ll put together a proposal within one business day.' },
 ]
 
 export default function PricingPage() {
@@ -57,7 +61,7 @@ export default function PricingPage() {
     <PageLayout title="Pricing" breadcrumb="Pricing">
       <div className="page-content">
         <h2>Fair-go pricing for every RTO</h2>
-        <p>No per-seat fees. No surprise overages. No 12-month lock-in on the starter plan. Pay for the students you actually enrol.</p>
+        <p>No per-seat fees. No surprise overages. No 12-month lock-in on the starter plan. <Link to="/contact" style={{ color: 'var(--teal-mid)' }}>Contact us</Link> for pricing tailored to your RTO's size and needs.</p>
       </div>
 
       <div className="page-feature-grid page-three-grid" style={{ marginTop: '2rem' }}>
@@ -65,10 +69,15 @@ export default function PricingPage() {
           <div className="page-feature-card" key={i} style={t.featured ? { border: '2px solid var(--teal)', position: 'relative' } : {}}>
             {t.featured && <span className="page-tag page-tag-teal" style={{ position: 'absolute', top: 12, right: 12 }}>MOST POPULAR</span>}
             <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 4 }}>{t.name}</p>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 8 }}>
-              <span style={{ fontSize: 36, fontWeight: 700, color: 'var(--navy)', fontFamily: 'var(--font-display)' }}>{t.dollar}</span>
-              {t.period && <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{t.period}</span>}
-            </div>
+            {SHOW_PRICING && (
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 8 }}>
+                <span style={{ fontSize: 36, fontWeight: 700, color: 'var(--navy)', fontFamily: 'var(--font-display)' }}>{t.dollar}</span>
+                {t.period && <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{t.period}</span>}
+              </div>
+            )}
+            {!SHOW_PRICING && (
+              <div style={{ fontSize: 13, color: 'var(--teal-mid)', fontWeight: 600, marginBottom: 8 }}>Pricing on request</div>
+            )}
             <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 16 }}>{t.note}</p>
             <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16 }}>
               {t.features.map((f, fi) => (
