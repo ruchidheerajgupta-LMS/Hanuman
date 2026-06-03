@@ -1,3 +1,6 @@
+// Set to true when pricing is ready to publish
+const SHOW_PRICING = false
+
 const TIERS = [
   {
     name: 'Starter',
@@ -80,11 +83,15 @@ export default function Pricing() {
 
               <div className="price-name" style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>{t.name}</div>
 
-              <div className="price-amount" style={{ marginBottom: 4 }}>
-                <span className="price-dollar" style={{ fontSize: 52, fontWeight: 800, lineHeight: 1 }}>{t.dollar}</span>
-                {t.dollarSuffix && <span style={{ fontSize: 28, fontWeight: 700, alignSelf: 'flex-start', marginTop: 8 }}>{t.dollarSuffix}</span>}
-                <span className="price-period" style={{ fontSize: 13, marginLeft: 4, alignSelf: 'flex-end', paddingBottom: 8 }}>per month</span>
-              </div>
+              {SHOW_PRICING ? (
+                <div className="price-amount" style={{ marginBottom: 4 }}>
+                  <span className="price-dollar" style={{ fontSize: 52, fontWeight: 800, lineHeight: 1 }}>{t.dollar}</span>
+                  {t.dollarSuffix && <span style={{ fontSize: 28, fontWeight: 700, alignSelf: 'flex-start', marginTop: 8 }}>{t.dollarSuffix}</span>}
+                  <span className="price-period" style={{ fontSize: 13, marginLeft: 4, alignSelf: 'flex-end', paddingBottom: 8 }}>per month</span>
+                </div>
+              ) : (
+                <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--accent)', marginBottom: 4 }}>Pricing on request</div>
+              )}
 
               <div style={{ fontSize: 14, fontWeight: 700, color: t.enrolmentColor, marginBottom: 20 }}>
                 {t.enrolmentLabel}
@@ -105,7 +112,7 @@ export default function Pricing() {
                 </div>
               ))}
 
-              {t.pricingNote && (
+              {SHOW_PRICING && t.pricingNote && (
                 <div style={{ fontSize: 12, marginTop: 20, marginBottom: 4, opacity: t.featured ? 0.7 : 0.55 }}>
                   {t.pricingNote}
                 </div>
