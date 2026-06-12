@@ -24,7 +24,11 @@ export default function Hero() {
 
   return (
     <section className="hero" id="home">
-      <div className="hero-bg" />
+      <div className="hero-bg">
+        <div className="orb hero-orb-1" />
+        <div className="orb hero-orb-2" />
+        <div className="orb hero-orb-3" />
+      </div>
       <div className="hero-grid" />
       <div className="hero-inner">
         <div className="hero-copy">
@@ -34,7 +38,7 @@ export default function Hero() {
           </div>
           <h1>
             The RTO Platform That{' '}
-            <span className="accent">Does More</span>{' '}
+            <span className="hero-accent">Does More</span>{' '}
             — For Less.
           </h1>
           <p className="hero-sub">

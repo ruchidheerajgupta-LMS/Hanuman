@@ -984,3 +984,272 @@ footer {
   .page-body { padding: 40px 0 64px; }
   .page-cta-box { padding: 32px 20px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   CLASSIC / PREMIUM THEME TOGGLE
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Toggle button ─────────────────────────────────────────── */
+.theme-toggle {
+  position: fixed; top: 14px; left: 14px; z-index: 9999;
+  display: flex; align-items: center; gap: 2px;
+  background: rgba(10,37,64,0.88);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 20px; padding: 4px;
+  backdrop-filter: blur(12px);
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+html.premium .theme-toggle {
+  border-color: rgba(14,212,160,0.38);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35), 0 0 0 1px rgba(14,212,160,0.12);
+}
+.theme-toggle-opt {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.03em;
+  padding: 4px 12px; border-radius: 16px;
+  color: rgba(255,255,255,0.38);
+  transition: all 0.25s; white-space: nowrap;
+}
+.theme-toggle-opt.active {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+html.premium .theme-toggle-opt.active {
+  background: linear-gradient(135deg, rgba(14,212,160,0.28), rgba(124,58,237,0.22));
+  color: #0ED4A0;
+}
+
+/* ── Classic: hero-accent = same as old .accent ─────────────── */
+.hero-accent { color: #5DCAA5; }
+
+/* ── Orb base (hidden in classic mode) ──────────────────────── */
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); pointer-events: none; z-index: 0;
+}
+html:not(.premium) .orb { display: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   PREMIUM MODE OVERRIDES  (all under html.premium)
+   Classic CSS above is 100% unchanged.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Premium CSS variables ──────────────────────────────────── */
+html.premium {
+  --teal-vivid:    #0ED4A0;
+  --purple:        #7C3AED;
+  --glow-teal:     rgba(14,212,160,0.35);
+  --glow-purple:   rgba(124,58,237,0.25);
+  --glass-bg:      rgba(255,255,255,0.05);
+  --glass-border:  rgba(255,255,255,0.10);
+}
+
+/* ── New keyframes ──────────────────────────────────────────── */
+@keyframes orbDrift {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%      { transform: translate(40px,-30px) scale(1.06); }
+  66%      { transform: translate(-20px,20px) scale(0.97); }
+}
+@keyframes gradientShift {
+  0%,100% { background-position: 0% 50%; }
+  50%     { background-position: 100% 50%; }
+}
+@keyframes pulseGlow {
+  0%,100% { box-shadow: 0 0 0 4px rgba(14,212,160,0.08), 0 24px 64px rgba(14,212,160,0.14); }
+  50%     { box-shadow: 0 0 0 4px rgba(14,212,160,0.18), 0 24px 80px rgba(14,212,160,0.28); }
+}
+
+/* ── Navigation ─────────────────────────────────────────────── */
+html.premium nav:not(.scrolled) {
+  background: rgba(10,37,64,0.68);
+  backdrop-filter: blur(20px) saturate(150%);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+html.premium nav.scrolled {
+  background: rgba(255,255,255,0.94);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 0 1px 0 var(--border), 0 4px 24px rgba(10,37,64,0.07);
+}
+html.premium .nav-cta-primary {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-vivid) 100%);
+  box-shadow: 0 2px 12px rgba(14,212,160,0.35);
+}
+html.premium .nav-cta-primary:hover {
+  background: linear-gradient(135deg, var(--teal-mid) 0%, var(--teal) 100%);
+  box-shadow: 0 4px 24px rgba(14,212,160,0.52);
+  transform: translateY(-1px);
+}
+
+/* ── Hero — orbs, gradient text, dashboard glass ────────────── */
+html.premium .hero-orb-1 {
+  width: 600px; height: 600px; top: -150px; left: -100px;
+  background: radial-gradient(circle, rgba(14,212,160,0.18) 0%, transparent 65%);
+  animation: orbDrift 15s ease-in-out infinite;
+}
+html.premium .hero-orb-2 {
+  width: 500px; height: 500px; bottom: -100px; right: -80px;
+  background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 65%);
+  animation: orbDrift 20s ease-in-out infinite reverse;
+}
+html.premium .hero-orb-3 {
+  width: 350px; height: 350px; top: 45%; right: 30%;
+  background: radial-gradient(circle, rgba(24,95,165,0.12) 0%, transparent 65%);
+  animation: orbDrift 28s ease-in-out infinite 8s;
+}
+
+html.premium .hero-grid {
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"),
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 256px 256px, 72px 72px, 72px 72px;
+}
+
+html.premium .hero-accent {
+  background: linear-gradient(135deg, #0ED4A0 0%, #5DCAA5 50%, #85B7EB 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 5s ease infinite;
+}
+
+html.premium .dashboard-frame {
+  backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.13);
+  box-shadow:
+    0 0 0 1px rgba(14,212,160,0.12),
+    0 24px 80px rgba(0,0,0,0.5),
+    inset 0 0 80px rgba(14,212,160,0.02);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+html.premium .btn-primary {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-vivid) 100%);
+  box-shadow: 0 4px 20px rgba(14,212,160,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+html.premium .btn-primary:hover {
+  background: linear-gradient(135deg, var(--teal-mid) 0%, var(--teal) 100%);
+  box-shadow: 0 8px 32px rgba(14,212,160,0.55);
+  transform: translateY(-2px);
+}
+
+/* ── Pillar cards ────────────────────────────────────────────── */
+html.premium .pillar-card::before { height: 4px; }
+html.premium .pillar-card.p1::before { background: linear-gradient(90deg, var(--teal), #0ED4A0); }
+html.premium .pillar-card.p2::before { background: linear-gradient(90deg, var(--blue), #06B6D4); }
+html.premium .pillar-card.p3::before { background: linear-gradient(90deg, var(--amber), #F97316); }
+
+html.premium .pillar-card.p1:hover {
+  border-color: rgba(29,158,117,0.28);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(14,212,160,0.09);
+}
+html.premium .pillar-card.p2:hover {
+  border-color: rgba(24,95,165,0.28);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(6,182,212,0.09);
+}
+html.premium .pillar-card.p3:hover {
+  border-color: rgba(186,117,23,0.28);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(249,115,22,0.09);
+}
+
+/* ── Killer feature cards ────────────────────────────────────── */
+html.premium .kf-card { position: relative; overflow: hidden; }
+html.premium .kf-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--teal), #06B6D4, #7C3AED);
+  opacity: 0; transition: opacity 0.3s;
+}
+html.premium .kf-card:hover::before { opacity: 1; }
+html.premium .kf-card:hover {
+  box-shadow: var(--shadow-lg), 0 0 28px rgba(14,212,160,0.07);
+  border-color: rgba(29,158,117,0.22);
+}
+
+/* ── Pricing featured card ───────────────────────────────────── */
+html.premium .price-card.featured {
+  border: 1px solid rgba(14,212,160,0.42);
+  animation: pulseGlow 3.5s ease-in-out infinite;
+}
+
+/* ── Testimonials — dark section with glass cards ───────────── */
+html.premium .testimonials-section {
+  background: var(--navy);
+  position: relative; overflow: hidden;
+}
+html.premium .testimonials-section::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 60% at 15% 50%, rgba(14,212,160,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 85% 30%, rgba(124,58,237,0.08) 0%, transparent 55%);
+}
+html.premium .testimonials-section h2 { color: #fff; }
+html.premium .testimonials-section .eyebrow {
+  background: rgba(14,212,160,0.12);
+  color: #5DCAA5;
+  border: 1px solid rgba(14,212,160,0.22);
+}
+html.premium .testimonials-section > .container > div > p { color: rgba(255,255,255,0.58); }
+html.premium .testimonial-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  backdrop-filter: blur(8px);
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+html.premium .testimonial-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(14,212,160,0.28);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 0 30px rgba(14,212,160,0.08);
+  transform: translateY(-4px);
+}
+html.premium .tcard-quote { color: rgba(255,255,255,0.78); }
+html.premium .tcard-name  { color: #fff; }
+html.premium .tcard-role  { color: rgba(255,255,255,0.45); }
+html.premium .stars       { color: #FAC775; }
+
+/* ── Audit CTA ───────────────────────────────────────────────── */
+html.premium .audit-section {
+  background: linear-gradient(135deg, #050F1C 0%, var(--navy) 50%, #0A1F35 100%);
+}
+html.premium .audit-section::before {
+  background:
+    radial-gradient(ellipse 60% 80% at 80% 50%, rgba(14,212,160,0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 10% 30%, rgba(124,58,237,0.10) 0%, transparent 55%);
+}
+html.premium .audit-step-num {
+  background: rgba(14,212,160,0.15);
+  border: 1px solid rgba(14,212,160,0.42);
+  box-shadow: 0 0 12px rgba(14,212,160,0.22);
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+html.premium footer {
+  background: #020C16;
+  position: relative;
+}
+html.premium footer::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(14,212,160,0.45) 40%, rgba(124,58,237,0.35) 60%, transparent 100%);
+}
+
+/* ── Scroll animations — cinematic spring ────────────────────── */
+html.premium .fade-up {
+  transform: translateY(32px) scale(0.98);
+  transition:
+    opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+    transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+html.premium .fade-up.visible {
+  transform: translateY(0) scale(1);
+}
+
+/* ── Inner page hero upgrade ─────────────────────────────────── */
+html.premium .page-hero {
+  background: linear-gradient(135deg, #050F1C 0%, var(--navy) 100%);
+}
+html.premium .page-hero-bg {
+  background:
+    radial-gradient(ellipse 60% 60% at 70% 40%, rgba(14,212,160,0.13) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 20% 80%, rgba(124,58,237,0.08) 0%, transparent 55%);
+}
