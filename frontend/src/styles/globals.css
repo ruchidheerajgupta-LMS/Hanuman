@@ -670,6 +670,7 @@ footer {
 }
 .page-hero h1 { color: #fff; font-size: clamp(28px, 3.5vw, 44px); margin-top: 8px; }
 .breadcrumb {
+  position: static; padding: 0;   /* override global nav{position:fixed;padding} — breadcrumb is a <nav> too */
   display: flex; align-items: center; gap: 8px;
   font-size: 13px; color: rgba(255,255,255,0.4);
 }
@@ -993,31 +994,32 @@ footer {
 .theme-toggle {
   position: fixed; top: 14px; left: 14px; z-index: 9999;
   display: flex; align-items: center; gap: 2px;
-  background: rgba(10,37,64,0.88);
-  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(10,37,64,0.18);
   border-radius: 20px; padding: 4px;
   backdrop-filter: blur(12px);
   cursor: pointer; font-family: 'DM Sans', sans-serif;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.10);
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 html.premium .theme-toggle {
-  border-color: rgba(14,212,160,0.38);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.35), 0 0 0 1px rgba(14,212,160,0.12);
+  background: rgba(255,255,255,0.97);
+  border-color: rgba(14,212,160,0.42);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18), 0 0 0 1px rgba(14,212,160,0.15);
 }
 .theme-toggle-opt {
-  font-size: 11px; font-weight: 500; letter-spacing: 0.03em;
-  padding: 4px 12px; border-radius: 16px;
-  color: rgba(255,255,255,0.38);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+  padding: 5px 13px; border-radius: 16px;
+  color: rgba(10,37,64,0.42);
   transition: all 0.25s; white-space: nowrap;
 }
 .theme-toggle-opt.active {
-  background: rgba(255,255,255,0.12);
+  background: var(--navy);
   color: #fff;
 }
 html.premium .theme-toggle-opt.active {
-  background: linear-gradient(135deg, rgba(14,212,160,0.28), rgba(124,58,237,0.22));
-  color: #0ED4A0;
+  background: linear-gradient(135deg, #1D9E75, #0ED4A0);
+  color: #fff;
 }
 
 /* ── Classic: hero-accent = same as old .accent ─────────────── */

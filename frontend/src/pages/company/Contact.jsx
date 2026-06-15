@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PageLayout from '../../components/layout/PageLayout'
+import api from '../../api/client'
 
 const EmailIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -35,10 +36,29 @@ const CONTACT_ITEMS = [
 
 export default function Contact() {
   const [sent, setSent] = useState(false)
+  const [form, setForm] = useState({ name: '', email: '', rto: '', message: '' })
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState(null)
 
-  const handleSubmit = (e) => {
+  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSent(true)
+    setError(null)
+    setSubmitting(true)
+    try {
+      await api.post('/contact', {
+        name: form.name,
+        email: form.email,
+        subject: form.rto ? `Website enquiry — ${form.rto}` : 'Website enquiry',
+        message: form.message,
+      })
+      setSent(true)
+    } catch (err) {
+      setError(err.response?.data?.error || 'Something went wrong. Please try again, or email us directly.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -101,35 +121,43 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
+                {error && (
+                  <div style={{
+                    background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c',
+                    borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13,
+                  }}>{error}</div>
+                )}
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--navy)' }}>Name</label>
-                  <input type="text" required placeholder="Your name" style={{
+                  <input type="text" required placeholder="Your name" value={form.name} onChange={set('name')} style={{
                     width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)',
                     fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box',
                   }} />
                 </div>
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--navy)' }}>Email</label>
-                  <input type="email" required placeholder="you@rto.edu.au" style={{
+                  <input type="email" required placeholder="you@rto.edu.au" value={form.email} onChange={set('email')} style={{
                     width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)',
                     fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box',
                   }} />
                 </div>
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--navy)' }}>RTO Name</label>
-                  <input type="text" placeholder="Your RTO (optional)" style={{
+                  <input type="text" placeholder="Your RTO (optional)" value={form.rto} onChange={set('rto')} style={{
                     width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)',
                     fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box',
                   }} />
                 </div>
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: 'var(--navy)' }}>Message</label>
-                  <textarea required rows={4} placeholder="How can we help?" style={{
+                  <textarea required rows={4} placeholder="How can we help?" value={form.message} onChange={set('message')} style={{
                     width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)',
                     fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box',
                   }} />
                 </div>
-                <button type="submit" className="btn-primary" style={{ width: '100%' }}>Send Message</button>
+                <button type="submit" className="btn-primary" style={{ width: '100%' }} disabled={submitting}>
+                  {submitting ? 'Sending…' : 'Send Message'}
+                </button>
               </form>
             )}
           </div>
