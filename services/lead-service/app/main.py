@@ -14,9 +14,9 @@ def create_app(config_class=Config):
 
     # The managed DB has no migration runner, so create any missing tables on
     # startup. create_all() is idempotent: it only creates tables that don't
-    # already exist and never alters or drops existing ones.
+    # already exist and never alters or drops existing ones. The models are
+    # already registered on the metadata via the blueprint imports above.
     with app.app_context():
-        import app.models  # noqa: F401 — register models on the metadata
         try:
             db.create_all()
         except Exception as exc:
