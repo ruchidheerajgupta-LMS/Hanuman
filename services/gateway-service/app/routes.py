@@ -156,37 +156,64 @@ def forgot_password():
     if not email:
         return jsonify({'success': False, 'error': 'Email is required'}), 400
 
+    # Generic response used whether or not the account exists, so this endpoint
+    # can't be used to enumerate registered email addresses.
+    generic = jsonify({
+        'success': True,
+        'emailed': True,
+        'message': 'If an account exists for this email, a temporary password has been sent to it.',
+    }), 200
+
     try:
         conn = _get_db_conn()
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-        # Check if user exists
         cur.execute("SELECT id, email, first_name, tenant_id FROM users WHERE email = %s AND is_active = TRUE", (email,))
         user = cur.fetchone()
 
         if not user:
             cur.close()
             conn.close()
-            return jsonify({'success': False, 'error': 'No account found with this email address.'}), 404
+            return generic
 
         # Generate a temporary password
         alphabet = string.ascii_letters + string.digits + '!@#$'
         temp_password = ''.join(secrets.choice(alphabet) for _ in range(12))
         hashed = bcrypt.hashpw(temp_password.encode('utf-8'), bcrypt.gensalt(12)).decode('utf-8')
 
-        # Update user with temp password and force change flag
+        from app.email_utils import is_configured, send_password_reset
+        login_url = current_app.config.get('PORTAL_URL', '')
+
+        if is_configured():
+            # Only change the password if we can actually deliver it — otherwise
+            # the user would be locked out with a password they never receive.
+            sent = send_password_reset(user['email'], user.get('first_name'), temp_password, login_url)
+            if not sent:
+                cur.close(); conn.close()
+                return jsonify({'success': False, 'error': 'Unable to send the reset email right now. Please try again later or contact your administrator.'}), 503
+
+            cur.execute(
+                "UPDATE users SET password_hash = %s, must_change_password = TRUE, failed_login_attempts = 0, locked_until = NULL, updated_at = NOW() WHERE id = %s",
+                (hashed, user['id'])
+            )
+            conn.commit()
+            cur.close(); conn.close()
+            current_app.logger.info(f"Password reset for {email}: temporary password emailed")
+            return generic
+
+        # ── SMTP not configured (local/dev or pre-setup) ──────────────────────
+        # Fall back to the legacy behaviour of returning the temp password inline
+        # so the flow still works, but flag it so the UI/admin knows email is off.
         cur.execute(
             "UPDATE users SET password_hash = %s, must_change_password = TRUE, failed_login_attempts = 0, locked_until = NULL, updated_at = NOW() WHERE id = %s",
             (hashed, user['id'])
         )
         conn.commit()
-        cur.close()
-        conn.close()
-
-        current_app.logger.info(f"Password reset for {email}: temporary password issued")
-
+        cur.close(); conn.close()
+        current_app.logger.warning(f"Password reset for {email}: SMTP not configured — returning temp password inline")
         return jsonify({
             'success': True,
+            'emailed': False,
             'temp_password': temp_password,
             'first_name': user['first_name'],
         }), 200

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.database import db
 from app.models import Contact, Subscriber, PageView
+from app.email_utils import notify_contact, welcome_subscriber
 
 misc_bp = Blueprint('misc', __name__, url_prefix='/api')
 
@@ -27,6 +28,11 @@ def submit_contact():
     db.session.add(contact)
     db.session.commit()
 
+    try:
+        notify_contact(contact)
+    except Exception:
+        pass
+
     return jsonify({'success': True, 'message': 'Message received!', 'data': {'id': contact.id}}), 201
 
 
@@ -50,6 +56,11 @@ def subscribe():
     sub = Subscriber(email=email, source=data.get('source', 'website'))
     db.session.add(sub)
     db.session.commit()
+
+    try:
+        welcome_subscriber(email)
+    except Exception:
+        pass
 
     return jsonify({'success': True, 'message': 'Subscribed successfully!'}), 201
 

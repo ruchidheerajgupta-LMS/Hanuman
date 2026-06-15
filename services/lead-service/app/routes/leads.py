@@ -3,6 +3,7 @@ import re
 from flask import Blueprint, request, jsonify
 from app.database import db
 from app.models import Lead
+from app.email_utils import notify_audit_booking
 
 leads_bp = Blueprint('leads', __name__, url_prefix='/api/leads')
 
@@ -44,6 +45,13 @@ def book_audit():
     )
     db.session.add(lead)
     db.session.commit()
+
+    # Best-effort: confirm to the prospect and notify the sales inbox.
+    # Never let an email failure break the booking.
+    try:
+        notify_audit_booking(lead)
+    except Exception:
+        pass
 
     return jsonify({
         'success': True,

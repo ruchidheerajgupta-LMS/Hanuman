@@ -47,7 +47,8 @@ export default function ForgotPassword() {
           </div>
 
           {result ? (
-            /* ── Success: show the temp password ── */
+            result.temp_password ? (
+            /* ── SMTP off (dev): show the temp password inline ── */
             <div style={{ padding: '4px 0' }}>
               <div style={{
                 background: '#f0fdf4', border: '1px solid #86efac',
@@ -90,6 +91,26 @@ export default function ForgotPassword() {
                 Go to Sign In
               </Link>
             </div>
+            ) : (
+            /* ── Email sent: tell them to check their inbox ── */
+            <div style={{ padding: '4px 0' }}>
+              <div style={{
+                background: '#f0fdf4', border: '1px solid #86efac',
+                borderRadius: 10, padding: '16px', marginBottom: 20,
+              }}>
+                <div style={{ fontWeight: 700, color: '#166534', marginBottom: 4 }}>
+                  Check your email
+                </div>
+                <div style={{ fontSize: 13, color: '#15803d' }}>
+                  {result.message || 'If an account exists for this email, a temporary password has been sent to it.'}
+                  {' '}It may take a minute to arrive — remember to check your spam folder.
+                </div>
+              </div>
+              <Link to="/manage" className="manage-login-btn" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
+                Go to Sign In
+              </Link>
+            </div>
+            )
           ) : (
             /* ── Request form ── */
             <form onSubmit={handleSubmit} className="manage-login-form">
