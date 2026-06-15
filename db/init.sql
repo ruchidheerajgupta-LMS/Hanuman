@@ -5,7 +5,7 @@
 -- ─────────────────────────────────────────────────────────────────────────────
 -- LEADS — Compliance Audit Bookings
 -- ─────────────────────────────────────────────────────────────────────────────
-CREATE TABLE leads (
+CREATE TABLE IF NOT EXISTS leads (
   id            SERIAL PRIMARY KEY,
   name          VARCHAR(255) NOT NULL,
   email         VARCHAR(255) NOT NULL,
@@ -24,14 +24,14 @@ CREATE TABLE leads (
   updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_leads_email ON leads(email);
-CREATE INDEX idx_leads_status ON leads(status);
-CREATE INDEX idx_leads_created ON leads(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_leads_email ON leads(email);
+CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
+CREATE INDEX IF NOT EXISTS idx_leads_created ON leads(created_at DESC);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- CONTACT SUBMISSIONS — General enquiries
 -- ─────────────────────────────────────────────────────────────────────────────
-CREATE TABLE contacts (
+CREATE TABLE IF NOT EXISTS contacts (
   id         SERIAL PRIMARY KEY,
   name       VARCHAR(255) NOT NULL,
   email      VARCHAR(255) NOT NULL,
@@ -42,12 +42,12 @@ CREATE TABLE contacts (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_contacts_status ON contacts(status);
+CREATE INDEX IF NOT EXISTS idx_contacts_status ON contacts(status);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- NEWSLETTER SUBSCRIBERS
 -- ─────────────────────────────────────────────────────────────────────────────
-CREATE TABLE subscribers (
+CREATE TABLE IF NOT EXISTS subscribers (
   id            SERIAL PRIMARY KEY,
   email         VARCHAR(255) UNIQUE NOT NULL,
   subscribed    BOOLEAN DEFAULT TRUE,
@@ -56,12 +56,12 @@ CREATE TABLE subscribers (
   unsubscribed_at TIMESTAMP
 );
 
-CREATE INDEX idx_subscribers_email ON subscribers(email);
+CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- PAGE ANALYTICS (lightweight, no external deps)
 -- ─────────────────────────────────────────────────────────────────────────────
-CREATE TABLE page_views (
+CREATE TABLE IF NOT EXISTS page_views (
   id         SERIAL PRIMARY KEY,
   path       VARCHAR(500) NOT NULL,
   referrer   VARCHAR(500),
@@ -71,8 +71,8 @@ CREATE TABLE page_views (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_page_views_path ON page_views(path);
-CREATE INDEX idx_page_views_created ON page_views(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path);
+CREATE INDEX IF NOT EXISTS idx_page_views_created ON page_views(created_at DESC);
 
 -- =============================================================================
 -- VERIFICATION
