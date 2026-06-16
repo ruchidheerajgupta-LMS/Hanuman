@@ -107,7 +107,13 @@ def gateway_login():
     if not data or not data.get('email') or not data.get('password'):
         return jsonify({'success': False, 'error': 'Email and password are required'}), 400
 
-    auth_url = current_app.config['TRAINTRACK_AUTH_URL']
+    # The base auth URL must NOT include a path — this endpoint appends
+    # /api/auth/login. Be forgiving of misconfiguration: strip a trailing slash
+    # and an accidental '/api/auth' suffix so the call doesn't become a doubled
+    # path (which returns a 404 HTML page and used to crash json parsing).
+    auth_url = current_app.config['TRAINTRACK_AUTH_URL'].rstrip('/')
+    if auth_url.endswith('/api/auth'):
+        auth_url = auth_url[: -len('/api/auth')]
 
     # Pass remember_me to auth service via request forwarding
     login_payload = {'email': data['email'], 'password': data['password']}
@@ -125,10 +131,20 @@ def gateway_login():
         current_app.logger.error(f'Auth service unreachable: {e}')
         return jsonify({'success': False, 'error': 'Authentication service unavailable'}), 503
 
-    if resp.status_code != 200:
-        return jsonify(resp.json()), resp.status_code
+    # The auth service should always return JSON. If it doesn't (e.g. a wrong
+    # URL hitting an nginx 404 page), surface a clear error instead of a 500.
+    try:
+        body = resp.json()
+    except ValueError:
+        current_app.logger.error(
+            f'Auth service returned non-JSON ({resp.status_code}) from {auth_url}/api/auth/login'
+        )
+        return jsonify({'success': False, 'error': 'Authentication service misconfigured'}), 502
 
-    auth_data = resp.json()
+    if resp.status_code != 200:
+        return jsonify(body), resp.status_code
+
+    auth_data = body
     user = auth_data.get('data', {}).get('user', {})
     tenant_id = user.get('tenant_id')
 
