@@ -12,6 +12,8 @@ export default function ManageLogin() {
   const [error, setError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [brand, setBrand] = useState(null)
+  const [step, setStep] = useState('email')          // 'email' → 'password'
+  const [identifying, setIdentifying] = useState(false)
 
   // Password change state
   const [mustChangePassword, setMustChangePassword] = useState(false)
@@ -44,6 +46,22 @@ export default function ManageLogin() {
   ]
   const allRulesMet = pwRules.every(r => r.test(newPassword))
   const passwordsMatch = newPassword && confirmPassword && newPassword === confirmPassword
+
+  /* ── Step 1: resolve the user's RTO branding from their email ── */
+  const handleIdentify = async (e) => {
+    e.preventDefault()
+    setError(null)
+    setIdentifying(true)
+    try {
+      const res = await api.post('/gateway/identify', { email })
+      if (res.data?.data?.tenant) setBrand(res.data.data.tenant)
+      setStep('password')
+    } catch {
+      setStep('password')   // neutral: continue regardless of lookup result
+    } finally {
+      setIdentifying(false)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -122,7 +140,9 @@ export default function ManageLogin() {
     }
   }
 
-  const accentColor = brand?.primary_color || null
+  // Tenant brand colour is intentionally not used — the portal keeps its default
+  // theme and shows only the RTO logo/name as branding.
+  const accentColor = null
 
   return (
     <div>
@@ -225,80 +245,107 @@ export default function ManageLogin() {
                 )}
               </button>
             </form>
-          ) : (
-            /* ── Normal Login Form ── */
-            <form onSubmit={handleSubmit} className="manage-login-form">
-            {error && (
-              <div className="manage-login-error">
-                <AlertCircle size={16} />
-                <span>{error}</span>
-              </div>
-            )}
-
-            <div className="manage-field">
-              <label htmlFor="email">Email Address</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="you@organisation.edu.au"
-                required
-                autoComplete="email"
-                autoFocus
-              />
-            </div>
-
-            <div className="manage-field">
-              <label htmlFor="password">Password</label>
-              <div className="manage-pw-wrap">
-                <input
-                  id="password"
-                  type={showPw ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  required
-                  autoComplete="current-password"
-                />
-                <button
-                  type="button"
-                  className="manage-pw-toggle"
-                  onClick={() => setShowPw(!showPw)}
-                  tabIndex={-1}
-                >
-                  {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Remember Me & Forgot Password */}
-            <div className="manage-options-row">
-              <label className="manage-remember">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={e => setRememberMe(e.target.checked)}
-                />
-                <span>Remember Me</span>
-              </label>
-              <Link to="/forgot-password" className="manage-forgot-link">
-                Forgot your password?
-              </Link>
-            </div>
-
-            <button
-              type="submit"
-              className="manage-login-btn"
-              disabled={submitting}
-              style={accentColor ? { background: accentColor } : undefined}
-            >
-              {submitting ? (
-                <><Loader2 size={18} className="spin" /> Signing in...</>
-              ) : (
-                'Sign In'
+          ) : step === 'email' ? (
+            /* ── Step 1: Email ── */
+            <form onSubmit={handleIdentify} className="manage-login-form">
+              {error && (
+                <div className="manage-login-error">
+                  <AlertCircle size={16} />
+                  <span>{error}</span>
+                </div>
               )}
-            </button>
+
+              <div className="manage-field">
+                <label htmlFor="email">Email Address</label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="you@organisation.edu.au"
+                  required
+                  autoComplete="email"
+                  autoFocus
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="manage-login-btn"
+                disabled={identifying}
+                style={accentColor ? { background: accentColor } : undefined}
+              >
+                {identifying ? (<><Loader2 size={18} className="spin" /> Checking…</>) : 'Continue'}
+              </button>
+            </form>
+          ) : (
+            /* ── Step 2: Password (branded) ── */
+            <form onSubmit={handleSubmit} className="manage-login-form">
+              {error && (
+                <div className="manage-login-error">
+                  <AlertCircle size={16} />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <div className="manage-field">
+                <label htmlFor="email">Email Address</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <input id="email" type="email" value={email} readOnly style={{ flex: 1, background: 'rgba(0,0,0,0.03)' }} />
+                  <button type="button" onClick={() => { setStep('email'); setPassword(''); setError(null) }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: accentColor || '#0ED4A0', fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap' }}>
+                    Change
+                  </button>
+                </div>
+              </div>
+
+              <div className="manage-field">
+                <label htmlFor="password">Password</label>
+                <div className="manage-pw-wrap">
+                  <input
+                    id="password"
+                    type={showPw ? 'text' : 'password'}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    required
+                    autoComplete="current-password"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    className="manage-pw-toggle"
+                    onClick={() => setShowPw(!showPw)}
+                    tabIndex={-1}
+                  >
+                    {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Remember Me & Forgot Password */}
+              <div className="manage-options-row">
+                <label className="manage-remember">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={e => setRememberMe(e.target.checked)}
+                  />
+                  <span>Remember Me</span>
+                </label>
+                <Link to="/forgot-password" className="manage-forgot-link">
+                  Forgot your password?
+                </Link>
+              </div>
+
+              <button
+                type="submit"
+                className="manage-login-btn"
+                disabled={submitting}
+                style={accentColor ? { background: accentColor } : undefined}
+              >
+                {submitting ? (<><Loader2 size={18} className="spin" /> Signing in…</>) : 'Sign In'}
+              </button>
             </form>
           )}
 

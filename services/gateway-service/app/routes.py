@@ -63,6 +63,43 @@ def get_tenant(rto_code):
         return jsonify({'success': False, 'error': 'Failed to fetch tenant'}), 500
 
 
+@gateway_bp.route('/identify', methods=['POST'])
+def identify():
+    """Resolve a tenant's branding from a user's email, for the email-first
+    login step. Always returns 200 with branding-or-null so this endpoint can't
+    be used to enumerate which emails exist (it never says 'no such user')."""
+    data = request.get_json(silent=True) or {}
+    email = (data.get('email') or '').lower().strip()
+    if not email:
+        return jsonify({'success': True, 'data': {'tenant': None}}), 200
+
+    tenant = None
+    try:
+        conn = _get_db_conn()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("""
+            SELECT t.name, t.rto_code, t.logo_url, t.primary_color, t.tagline, t.status
+            FROM users u
+            JOIN tenants t ON t.id = u.tenant_id
+            WHERE u.email = %s AND u.is_active = TRUE
+            LIMIT 1
+        """, (email,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row and row['status'] == 'active':
+            tenant = {
+                'name': row['name'], 'rto_code': row['rto_code'],
+                'logo_url': row['logo_url'], 'primary_color': row['primary_color'],
+                'tagline': row['tagline'],
+            }
+    except Exception as e:
+        current_app.logger.error(f'identify failed: {e}')
+        # Fail open to a neutral response — never block login on a lookup error.
+
+    return jsonify({'success': True, 'data': {'tenant': tenant}}), 200
+
+
 @gateway_bp.route('/login', methods=['POST'])
 def gateway_login():
     """Proxy login to TrainTrack auth service and return tenant-aware response."""
