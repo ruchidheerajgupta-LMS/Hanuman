@@ -70,7 +70,7 @@ export default function Hero() {
               <div className="db-dot" style={{ background: '#E24B4A' }} />
               <div className="db-dot" style={{ background: '#EF9F27' }} />
               <div className="db-dot" style={{ background: '#1D9E75' }} />
-              <div className="db-url">traintrack.com.au/dashboard</div>
+              <div className="db-url">app.traintrack.work/dashboard</div>
             </div>
             <div className="db-stats">
               {STATS.map((s) => (
