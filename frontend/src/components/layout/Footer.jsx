@@ -50,7 +50,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>&copy; 2026 TrainTrack Pty Ltd &middot; ABN 00 000 000 000 &middot; Melbourne, VIC</span>
+          <span>&copy; 2026 TrackLearning &middot; ABN 77 965 391 392 &middot; Melbourne, VIC &middot; All rights reserved.</span>
           <span style={{ display: 'flex', gap: 16 }}>
             <span style={{ color: 'rgba(255,255,255,0.35)', cursor: 'pointer' }}>Privacy Policy</span>
             <span style={{ color: 'rgba(255,255,255,0.35)', cursor: 'pointer' }}>Terms of Service</span>

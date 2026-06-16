@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
         <p className="legal-effective">Effective Date: 1 January 2026</p>
 
         <p>
-          TrainTrack Pty Ltd (ABN 12 345 678 901) (&ldquo;TrainTrack&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;)
+          TrackLearning (ABN 77 965 391 392), trading as TrainTrack (&ldquo;TrainTrack&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;)
           is committed to protecting the privacy of your personal information. This Privacy Policy explains how we
           collect, use, disclose, and safeguard your information when you use the TrainTrack platform, in compliance
           with the Australian Privacy Act 1988 (Cth) and the Australian Privacy Principles (APPs).
@@ -118,9 +118,8 @@ export default function PrivacyPolicy() {
         <h2>11. Contact Us</h2>
         <p>If you have questions or concerns about this Privacy Policy or our data practices, contact:</p>
         <ul>
-          <li><strong>Privacy Officer:</strong> TrainTrack Pty Ltd</li>
-          <li>Email: <a href="mailto:privacy@traintrack.edu.au">privacy@traintrack.edu.au</a></li>
-          <li>Address: 123 Collins St, Melbourne VIC 3000, Australia</li>
+          <li><strong>Privacy Officer:</strong> TrackLearning</li>
+          <li>Email: <a href="mailto:contact@traintrack.work">contact@traintrack.work</a></li>
         </ul>
         <p>
           You may also lodge a complaint with the Office of the Australian Information Commissioner (OAIC)

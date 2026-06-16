@@ -9,7 +9,7 @@ export default function EndUserAgreement() {
 
         <p>
           This End User Agreement (&ldquo;Agreement&rdquo;) is a legal agreement between you (&ldquo;User&rdquo;, &ldquo;you&rdquo;)
-          and TrainTrack Pty Ltd (ABN 12 345 678 901) (&ldquo;TrainTrack&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) for use of the
+          and TrackLearning (ABN 77 965 391 392), trading as TrainTrack (&ldquo;TrainTrack&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) for use of the
           TrainTrack platform, including all associated services, websites, and applications.
         </p>
 
@@ -52,7 +52,7 @@ export default function EndUserAgreement() {
         <h2>5. Intellectual Property</h2>
         <p>
           All content, features, and functionality of the TrainTrack platform — including software, text, graphics,
-          logos, and design — are owned by TrainTrack Pty Ltd and are protected by Australian and international
+          logos, and design — are owned by TrackLearning and are protected by Australian and international
           intellectual property laws. Your use of the platform does not grant you any ownership rights.
         </p>
 
@@ -109,8 +109,7 @@ export default function EndUserAgreement() {
         <h2>13. Contact</h2>
         <p>For questions about this Agreement, contact us at:</p>
         <ul>
-          <li>Email: <a href="mailto:legal@traintrack.edu.au">legal@traintrack.edu.au</a></li>
-          <li>Address: 123 Collins St, Melbourne VIC 3000, Australia</li>
+          <li>Email: <a href="mailto:contact@traintrack.work">contact@traintrack.work</a></li>
         </ul>
 
         <div className="legal-back">
