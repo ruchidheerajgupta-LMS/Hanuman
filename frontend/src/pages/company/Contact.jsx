@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import PageLayout from '../../components/layout/PageLayout'
 import api from '../../api/client'
 
@@ -35,8 +36,20 @@ const CONTACT_ITEMS = [
 ]
 
 export default function Contact() {
+  const [searchParams] = useSearchParams()
+  const plan = searchParams.get('plan')
+  const enquiry = searchParams.get('enquiry')   // 'demo' | 'sales' (from the product tour)
+
+  const prefillMessage = plan
+    ? `I'm interested in the ${plan} plan and would like to know more.`
+    : enquiry === 'demo'
+      ? "I'd like to book a free 30-minute demo of TrainTrack."
+      : enquiry === 'sales'
+        ? "I'd like to talk to your sales team about TrainTrack."
+        : ''
+
   const [sent, setSent] = useState(false)
-  const [form, setForm] = useState({ name: '', email: '', rto: '', message: '' })
+  const [form, setForm] = useState({ name: '', email: '', rto: '', message: prefillMessage })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
@@ -50,7 +63,13 @@ export default function Contact() {
       await api.post('/contact', {
         name: form.name,
         email: form.email,
-        subject: form.rto ? `Website enquiry — ${form.rto}` : 'Website enquiry',
+        subject: plan
+          ? `${plan} plan enquiry${form.rto ? ` — ${form.rto}` : ''}`
+          : enquiry === 'demo'
+            ? `Demo request${form.rto ? ` — ${form.rto}` : ''}`
+            : enquiry === 'sales'
+              ? `Sales enquiry${form.rto ? ` — ${form.rto}` : ''}`
+              : (form.rto ? `Website enquiry — ${form.rto}` : 'Website enquiry'),
         message: form.message,
       })
       setSent(true)

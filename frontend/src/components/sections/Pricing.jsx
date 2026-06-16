@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+
 // Set to true when pricing is ready to publish
 const SHOW_PRICING = false
 
@@ -60,7 +62,8 @@ const TIERS = [
 ]
 
 export default function Pricing() {
-  const scrollTo = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+  const navigate = useNavigate()
+  const enquire = (plan) => navigate(`/company/contact?plan=${encodeURIComponent(plan)}`)
 
   return (
     <section className="section pricing-section" id="pricing">
@@ -118,7 +121,7 @@ export default function Pricing() {
                 </div>
               )}
 
-              <button className={`price-btn ${t.btnClass}`} onClick={scrollTo}>{t.btnText}</button>
+              <button className={`price-btn ${t.btnClass}`} onClick={() => enquire(t.name)}>{t.btnText}</button>
             </div>
           ))}
         </div>

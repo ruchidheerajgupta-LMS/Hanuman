@@ -87,7 +87,7 @@ export default function PricingPage() {
                 </div>
               ))}
             </div>
-            <Link to="/#audit" className="btn-primary" style={{ display: 'block', textAlign: 'center', marginTop: 20 }}>
+            <Link to={`/company/contact?plan=${encodeURIComponent(t.name)}`} className="btn-primary" style={{ display: 'block', textAlign: 'center', marginTop: 20 }}>
               {t.featured ? 'Start Free Trial' : 'Get Started'}
             </Link>
           </div>
