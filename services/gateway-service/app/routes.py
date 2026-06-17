@@ -176,21 +176,23 @@ def gateway_login():
         }
     }))
     
-    # Extract JWT cookie(s) from auth response and re-set with localhost domain
-    # resp.cookies is a dict-like object with cookie names and values
+    # Relay the auth service's JWT cookie(s) to the client, scoped so they're
+    # shared between the portal and the LMS. In dev that's domain=localhost
+    # (works across ports); in prod set SSO_COOKIE_DOMAIN=.traintrack.work so
+    # the cookie reaches app.traintrack.work, and SSO_COOKIE_SECURE=true (https).
+    cookie_domain = current_app.config['SSO_COOKIE_DOMAIN']
+    cookie_secure = current_app.config['SSO_COOKIE_SECURE']
     for cookie_name, cookie_value in resp.cookies.items():
-        # Re-set cookie with correct attributes for cross-port access
         response.set_cookie(
             cookie_name,
             value=cookie_value,
-            domain='localhost',  # ✓ Works across all localhost ports
+            domain=cookie_domain,
             path='/',
-            httponly=True,  # ✓ All JWT cookies should be httponly
-            secure=False,   # ✓ False for http:// (development). Set True for production with https://
-            samesite='Lax',  # ✓ Allow same-site requests
+            httponly=True,
+            secure=cookie_secure,
+            samesite='Lax',
         )
-        
-        current_app.logger.info(f'Set cookie {cookie_name} with domain=localhost')
+        current_app.logger.info(f'Set cookie {cookie_name} with domain={cookie_domain}')
 
     return response, 200
 
