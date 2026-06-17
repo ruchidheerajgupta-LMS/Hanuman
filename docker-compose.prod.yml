@@ -99,6 +99,12 @@ services:
       TRAINTRACK_FRONTEND_URL: ${TRAINTRACK_FRONTEND_URL}
       TRAINTRACK_DB_URL:       ${TRAINTRACK_DB_URL}
       PORTAL_URL:              ${PORTAL_URL:-}
+      # SSO cookie sharing — REQUIRED so the JWT set at login on the portal
+      # (traintrack.work) is also sent to the LMS (app.traintrack.work). Without
+      # these the gateway defaults to domain=localhost and the cookie is rejected
+      # by the browser → login succeeds for a moment then bounces to /manage.
+      SSO_COOKIE_DOMAIN:       ${SSO_COOKIE_DOMAIN:-.traintrack.work}
+      SSO_COOKIE_SECURE:       ${SSO_COOKIE_SECURE:-true}
       REDIS_URL:               redis://:${REDIS_PASSWORD}@redis:6379/0
       CORS_ORIGINS:            ${CORS_ORIGINS}
       # Email (transactional) — password reset
