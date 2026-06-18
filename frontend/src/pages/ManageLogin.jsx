@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Eye, EyeOff, Loader2, AlertCircle, GraduationCap, CheckCircle2, ShieldCheck } from 'lucide-react'
+import { Eye, EyeOff, Loader2, AlertCircle, GraduationCap, CheckCircle2, ShieldCheck, ArrowLeft } from 'lucide-react'
 import api from '../api/client'
 
 export default function ManageLogin() {
@@ -363,6 +363,18 @@ export default function ManageLogin() {
               <GraduationCap size={12} /> Powered by TrainTrack
             </p>
           )}
+
+          <div style={{ textAlign: 'center', marginTop: 18 }}>
+            <Link
+              to="/"
+              style={{
+                fontSize: 13, color: '#64748b', textDecoration: 'none',
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+              }}
+            >
+              <ArrowLeft size={14} /> Back to traintrack.work
+            </Link>
+          </div>
         </div>
 
         {/* Background watermark logo */}
