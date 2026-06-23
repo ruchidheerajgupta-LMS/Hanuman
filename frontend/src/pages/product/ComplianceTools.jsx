@@ -36,7 +36,7 @@ export default function ComplianceTools() {
 
       <div className="page-cta-box">
         <h2>Never fear an ASQA audit again</h2>
-        <p>See how 140+ RTOs stay compliant with TrainTrack.</p>
+        <p>See how TrainTrack keeps your RTO audit-ready.</p>
         <Link to="/#audit" className="btn-primary">Get a Free Compliance Audit</Link>
       </div>
     </PageLayout>

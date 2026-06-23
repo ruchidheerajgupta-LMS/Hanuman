@@ -10,10 +10,10 @@ export default function About() {
   ]
 
   const stats = [
-    { num: '140+', label: 'RTOs trust TrainTrack' },
-    { num: '50,000+', label: 'Active student enrolments' },
-    { num: '99.9%', label: 'Platform uptime' },
-    { num: '4.8/5', label: 'Customer satisfaction' },
+    { num: '8', label: 'Integrated modules' },
+    { num: '100%', label: 'AVETMISS 8.0 coverage' },
+    { num: '🇦🇺', label: 'Australian-built & hosted' },
+    { num: '0', label: 'Lock-in contracts' },
   ]
 
   return (
@@ -44,15 +44,30 @@ export default function About() {
         ))}
       </div>
 
-      <div className="page-card" style={{ marginTop: '2rem' }}>
-        <h3>Our team</h3>
-        <p>We're a small, focused team of RTO compliance experts, software engineers, and VET educators based in Melbourne. Every team member has hands-on experience in the VET sector — whether as an RTO manager, auditor, trainer, or compliance consultant.</p>
-        <p>When you call TrainTrack support, you speak to someone who understands the difference between a TAS and a TAE, who knows what NAT00120 contains, and who's been through an ASQA audit themselves.</p>
+      <div className="page-card" style={{ marginTop: '2rem', display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+        <img
+          src="/Founder.jpeg"
+          alt="Ruchi Gupta, Founder of TrainTrack"
+          width="160"
+          height="160"
+          style={{ width: 160, height: 160, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, boxShadow: 'var(--shadow-md)' }}
+        />
+        <div style={{ flex: 1, minWidth: 260 }}>
+          <h3 style={{ marginBottom: 4 }}>Meet the founder</h3>
+          <p style={{ margin: '0 0 2px', fontWeight: 600, color: 'var(--navy)' }}>Ruchi Gupta</p>
+          <p style={{ margin: '0 0 14px', color: 'var(--text-muted)', fontSize: 13 }}>Founder, TrainTrack · Training Advocate</p>
+          <p style={{ fontStyle: 'italic', marginBottom: 12 }}>
+            “I spent years inside RTOs — exporting AVETMISS by hand at 11pm before an audit, wrestling spreadsheets that never talked to each other. I built TrainTrack so no provider has to work that way again.”
+          </p>
+          <p style={{ marginBottom: 0 }}>
+            Ruchi has worked across the Australian VET sector and been through ASQA audits firsthand — TrainTrack is the platform she always wished existed.
+          </p>
+        </div>
       </div>
 
       <div className="page-cta-box">
         <h2>Ready to see TrainTrack in action?</h2>
-        <p>Book a demo with our team and see why 140+ RTOs trust us.</p>
+        <p>We’re now onboarding our founding RTOs — book a demo and be among the first.</p>
         <Link to="/#audit" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>

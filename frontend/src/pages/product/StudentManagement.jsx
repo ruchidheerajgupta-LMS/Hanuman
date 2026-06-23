@@ -43,7 +43,7 @@ export default function StudentManagement() {
 
       <div className="page-cta-box">
         <h2>Simplify student administration</h2>
-        <p>Join 140+ RTOs managing 50,000+ learners on TrainTrack.</p>
+        <p>Manage every stage of the student lifecycle — from enquiry to certificate.</p>
         <Link to="/#audit" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
