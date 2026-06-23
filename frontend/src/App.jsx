@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import ScrollManager from './components/ScrollManager'
 import HomePage from './pages/HomePage'
 import ManageLogin from './pages/ManageLogin'
 import ForgotPassword from './pages/ForgotPassword'
@@ -34,6 +35,7 @@ import PitchDeck from './pages/PitchDeck'
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollManager />
       <Routes>
         <Route path="/" element={<HomePage />} />
 
