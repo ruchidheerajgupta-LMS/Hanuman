@@ -3,6 +3,11 @@ import os
 
 class Config:
     TRAINTRACK_AUTH_URL = os.environ.get('TRAINTRACK_AUTH_URL', 'http://traintrack-auth:5001')
+    # Verify the auth service's TLS certificate when proxying credentials to it.
+    # Defaults to True (secure). Only set false if the auth URL is an HTTPS host
+    # with a self-signed/internal cert — better still, point TRAINTRACK_AUTH_URL
+    # at the internal/private endpoint so credentials never leave the private net.
+    TRAINTRACK_VERIFY_TLS = os.environ.get('TRAINTRACK_VERIFY_TLS', 'true').lower() == 'true'
     TRAINTRACK_FRONTEND_URL = os.environ.get('TRAINTRACK_FRONTEND_URL', 'http://localhost:3000')
     TRAINTRACK_DB_URL = os.environ.get('TRAINTRACK_DB_URL')
     # Public URL of the Hanuman portal — used for the "Sign in" link in emails

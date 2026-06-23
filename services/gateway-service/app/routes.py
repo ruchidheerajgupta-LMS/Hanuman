@@ -125,7 +125,7 @@ def gateway_login():
             f'{auth_url}/api/auth/login',
             json=login_payload,
             timeout=30,
-            verify=False,
+            verify=current_app.config['TRAINTRACK_VERIFY_TLS'],
         )
     except http_requests.RequestException as e:
         current_app.logger.error(f'Auth service unreachable: {e}')
@@ -231,47 +231,39 @@ def forgot_password():
             conn.close()
             return generic
 
-        # Generate a temporary password
+        from app.email_utils import is_configured, send_password_reset
+
+        # If we have no way to DELIVER a new password, do nothing: never reset the
+        # account (that would lock the user out with a password they can't get) and
+        # never return the password in the HTTP response (account-takeover risk).
+        # Admins can still reset from the admin panel.
+        if not is_configured():
+            cur.close(); conn.close()
+            current_app.logger.error(
+                f"Password reset requested for {email} but SMTP is not configured — no action taken"
+            )
+            return generic
+
+        # Generate a temporary password and email it. Only change the stored
+        # password once the email is actually accepted for delivery.
         alphabet = string.ascii_letters + string.digits + '!@#$'
         temp_password = ''.join(secrets.choice(alphabet) for _ in range(12))
         hashed = bcrypt.hashpw(temp_password.encode('utf-8'), bcrypt.gensalt(12)).decode('utf-8')
-
-        from app.email_utils import is_configured, send_password_reset
         login_url = current_app.config.get('PORTAL_URL', '')
 
-        if is_configured():
-            # Only change the password if we can actually deliver it — otherwise
-            # the user would be locked out with a password they never receive.
-            sent = send_password_reset(user['email'], user.get('first_name'), temp_password, login_url)
-            if not sent:
-                cur.close(); conn.close()
-                return jsonify({'success': False, 'error': 'Unable to send the reset email right now. Please try again later or contact your administrator.'}), 503
-
-            cur.execute(
-                "UPDATE users SET password_hash = %s, must_change_password = TRUE, failed_login_attempts = 0, locked_until = NULL, updated_at = NOW() WHERE id = %s",
-                (hashed, user['id'])
-            )
-            conn.commit()
+        sent = send_password_reset(user['email'], user.get('first_name'), temp_password, login_url)
+        if not sent:
             cur.close(); conn.close()
-            current_app.logger.info(f"Password reset for {email}: temporary password emailed")
-            return generic
+            return jsonify({'success': False, 'error': 'Unable to send the reset email right now. Please try again later or contact your administrator.'}), 503
 
-        # ── SMTP not configured (local/dev or pre-setup) ──────────────────────
-        # Fall back to the legacy behaviour of returning the temp password inline
-        # so the flow still works, but flag it so the UI/admin knows email is off.
         cur.execute(
             "UPDATE users SET password_hash = %s, must_change_password = TRUE, failed_login_attempts = 0, locked_until = NULL, updated_at = NOW() WHERE id = %s",
             (hashed, user['id'])
         )
         conn.commit()
         cur.close(); conn.close()
-        current_app.logger.warning(f"Password reset for {email}: SMTP not configured — returning temp password inline")
-        return jsonify({
-            'success': True,
-            'emailed': False,
-            'temp_password': temp_password,
-            'first_name': user['first_name'],
-        }), 200
+        current_app.logger.info(f"Password reset for {email}: temporary password emailed")
+        return generic
 
     except Exception as e:
         current_app.logger.error(f'Password reset failed: {e}')
