@@ -74,7 +74,7 @@ export default function Avetmiss8Guide() {
       <div className="page-cta-box">
         <h2>Automate AVETMISS with TrainTrack</h2>
         <p>Stop wrestling with NAT files. Let TrainTrack generate, validate, and export for you.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

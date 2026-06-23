@@ -61,7 +61,7 @@ export default function CertificatesQR() {
       <div className="page-cta-box">
         <h2>Modernise your certificate issuance</h2>
         <p>QR-verified certificates build trust with employers and students alike.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

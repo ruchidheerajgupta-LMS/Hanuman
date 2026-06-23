@@ -58,7 +58,7 @@ export default function ScopeManagement() {
       <div className="page-cta-box">
         <h2>Stay on top of scope changes</h2>
         <p>TrainTrack monitors training.gov.au and alerts you to changes affecting your scope.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

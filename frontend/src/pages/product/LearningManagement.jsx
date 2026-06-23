@@ -42,7 +42,7 @@ export default function LearningManagement() {
       <div className="page-cta-box">
         <h2>Transform your training delivery</h2>
         <p>See how TrainTrack LMS reduces admin time by 60%.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

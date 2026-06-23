@@ -71,7 +71,7 @@ export default function VsCloudAssess() {
       <div className="page-cta-box">
         <h2>See the TrainTrack difference</h2>
         <p>Book a demo and we'll show you how we compare — using your own data.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

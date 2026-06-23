@@ -50,7 +50,7 @@ export default function OnlineEnrolment() {
       <div className="page-cta-box">
         <h2>Automate your enrolment process</h2>
         <p>RTOs using TrainTrack Online Enrolment see 3x faster processing times.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

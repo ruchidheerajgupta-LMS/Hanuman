@@ -70,7 +70,7 @@ export default function TrainerCurrency() {
       <div className="page-cta-box">
         <h2>Never miss a currency expiry</h2>
         <p>TrainTrack automates trainer currency tracking and alerts.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

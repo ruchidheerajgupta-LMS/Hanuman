@@ -71,7 +71,7 @@ export default function AiGrading() {
       <div className="page-cta-box">
         <h2>Give your trainers superhuman speed</h2>
         <p>See AI Grading in action with a live demo using your own assessments.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

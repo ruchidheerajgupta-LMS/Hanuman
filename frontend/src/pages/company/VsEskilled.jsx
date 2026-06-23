@@ -72,7 +72,7 @@ export default function VsEskilled() {
       <div className="page-cta-box">
         <h2>Compare for yourself</h2>
         <p>Book a demo and see TrainTrack alongside your current setup.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

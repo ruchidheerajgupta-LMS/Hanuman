@@ -44,7 +44,7 @@ export default function StudentManagement() {
       <div className="page-cta-box">
         <h2>Simplify student administration</h2>
         <p>Manage every stage of the student lifecycle — from enquiry to certificate.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

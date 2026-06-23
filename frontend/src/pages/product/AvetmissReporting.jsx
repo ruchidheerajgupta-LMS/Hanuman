@@ -62,7 +62,7 @@ export default function AvetmissReporting() {
       <div className="page-cta-box">
         <h2>Never dread AVETMISS again</h2>
         <p>TrainTrack handles reporting so you can focus on training.</p>
-        <Link to="/#audit" className="btn-primary">See It in Action</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">See It in Action</Link>
       </div>
     </PageLayout>
   )

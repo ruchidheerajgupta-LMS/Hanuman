@@ -58,7 +58,7 @@ export default function UsiValidation() {
       <div className="page-cta-box">
         <h2>Stay on top of USI compliance</h2>
         <p>Keep your student register complete and AVETMISS-ready at all times.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )

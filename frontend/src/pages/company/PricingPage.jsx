@@ -107,7 +107,7 @@ export default function PricingPage() {
       <div className="page-cta-box">
         <h2>Not sure which plan fits?</h2>
         <p>Talk to our team — we'll recommend the right plan based on your RTO's size and needs.</p>
-        <Link to="/#audit" className="btn-primary">Book a Call</Link>
+        <Link to="/company/contact?enquiry=sales" className="btn-primary">Book a Call</Link>
       </div>
     </PageLayout>
   )
