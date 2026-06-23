@@ -56,11 +56,8 @@ export default function About() {
           <h3 style={{ marginBottom: 4 }}>Meet the founder</h3>
           <p style={{ margin: '0 0 2px', fontWeight: 600, color: 'var(--navy)' }}>Ruchi Gupta</p>
           <p style={{ margin: '0 0 14px', color: 'var(--text-muted)', fontSize: 13 }}>Founder, TrainTrack · Training Advocate</p>
-          <p style={{ fontStyle: 'italic', marginBottom: 12 }}>
+          <p style={{ fontStyle: 'italic', marginBottom: 0 }}>
             “I spent years inside RTOs — exporting AVETMISS by hand at 11pm before an audit, wrestling spreadsheets that never talked to each other. I built TrainTrack so no provider has to work that way again.”
-          </p>
-          <p style={{ marginBottom: 0 }}>
-            Ruchi has worked across the Australian VET sector and been through ASQA audits firsthand — TrainTrack is the platform she always wished existed.
           </p>
         </div>
       </div>
@@ -68,7 +65,7 @@ export default function About() {
       <div className="page-cta-box">
         <h2>Ready to see TrainTrack in action?</h2>
         <p>We’re now onboarding our founding RTOs — book a demo and be among the first.</p>
-        <Link to="/#audit" className="btn-primary">Book a Demo</Link>
+        <Link to="/company/contact?enquiry=demo" className="btn-primary">Book a Demo</Link>
       </div>
     </PageLayout>
   )
