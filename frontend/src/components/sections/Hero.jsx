@@ -44,7 +44,7 @@ export default function Hero() {
           <p className="hero-sub">
             TrainTrack combines SMS, LMS, digital signatures, RPL, trainer currency tracking,
             and AVETMISS NAT export in one platform. Legacy platforms charge add-ons for half of
-            that. We include it all — from $199/month.
+            that. We include it all — from $299/month.
           </p>
           <div className="hero-ctas">
             <button className="btn-primary" onClick={() => scrollTo('audit')}>

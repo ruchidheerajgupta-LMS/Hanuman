@@ -6,8 +6,8 @@ const SHOW_PRICING = false
 const TIERS = [
   {
     name: 'Starter',
-    dollar: '$199',
-    enrolmentLabel: 'Up to 75 active enrolments',
+    dollar: '$299',
+    enrolmentLabel: 'Up to 50 active enrolments',
     enrolmentColor: 'var(--accent)',
     storageLabel: '10 GB document storage included',
     features: [
@@ -18,15 +18,15 @@ const TIERS = [
       'Basic analytics',
     ],
     excluded: ['RPL workflow'],
-    pricingNote: '$750 onboarding · $3.50/extra enrolment · $2.50/GB extra storage',
+    pricingNote: '$1,000 onboarding · $3.50/extra enrolment · $2.50/GB extra storage',
     btnClass: 'price-btn-outline',
     btnText: 'Get Started',
   },
   {
     name: 'Professional',
-    dollar: '$449',
+    dollar: '$699',
     featured: true,
-    enrolmentLabel: 'Up to 250 active enrolments',
+    enrolmentLabel: 'Up to 100 active enrolments',
     enrolmentColor: 'var(--accent)',
     storageLabel: '25 GB document storage included',
     features: [
@@ -38,7 +38,7 @@ const TIERS = [
       'Priority support',
     ],
     excluded: [],
-    pricingNote: '$1,500 onboarding · $2.00/extra enrolment · $2.00/GB extra storage',
+    pricingNote: '$2,000 onboarding · $2.50/extra enrolment · $2.00/GB extra storage',
     btnClass: 'price-btn-solid',
     btnText: 'Get Started',
   },
