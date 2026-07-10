@@ -16,6 +16,7 @@ const TIERS = [
       'Digital certificates + QR codes',
       'Branded online enrolment engine',
       'Australian email support',
+      '10 GB document storage included',
     ],
   },
   {
@@ -29,6 +30,7 @@ const TIERS = [
       'Training.gov.au scope sync',
       'Stripe payment processing',
       'Priority phone + video support (AEST)',
+      '25 GB document storage included',
     ],
   },
   {
@@ -42,6 +44,7 @@ const TIERS = [
       'White-label learner portal',
       'AU-hosted data sovereignty guaranteed',
       'SLA-backed 99.9% uptime',
+      '100 GB document storage included',
     ],
   },
 ]

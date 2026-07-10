@@ -9,6 +9,7 @@ const TIERS = [
     dollar: '$199',
     enrolmentLabel: 'Up to 75 active enrolments',
     enrolmentColor: 'var(--accent)',
+    storageLabel: '10 GB document storage included',
     features: [
       'Student management',
       'Assessment builder',
@@ -17,7 +18,7 @@ const TIERS = [
       'Basic analytics',
     ],
     excluded: ['RPL workflow'],
-    pricingNote: '$750 onboarding · $3.50/extra enrolment',
+    pricingNote: '$750 onboarding · $3.50/extra enrolment · $2.50/GB extra storage',
     btnClass: 'price-btn-outline',
     btnText: 'Get Started',
   },
@@ -27,6 +28,7 @@ const TIERS = [
     featured: true,
     enrolmentLabel: 'Up to 250 active enrolments',
     enrolmentColor: 'var(--accent)',
+    storageLabel: '25 GB document storage included',
     features: [
       'Everything in Starter',
       'RPL workflow',
@@ -36,7 +38,7 @@ const TIERS = [
       'Priority support',
     ],
     excluded: [],
-    pricingNote: '$1,500 onboarding · $2.00/extra enrolment',
+    pricingNote: '$1,500 onboarding · $2.00/extra enrolment · $2.00/GB extra storage',
     btnClass: 'price-btn-solid',
     btnText: 'Get Started',
   },
@@ -46,6 +48,7 @@ const TIERS = [
     dollarSuffix: '+',
     enrolmentLabel: 'Unlimited enrolments',
     enrolmentColor: '#f59e0b',
+    storageLabel: '100 GB document storage included',
     features: [
       'Everything in Professional',
       'Dedicated onboarding',
@@ -55,7 +58,7 @@ const TIERS = [
       'Multi-campus support',
     ],
     excluded: [],
-    pricingNote: '$3,000+ onboarding · custom pricing',
+    pricingNote: '$3,000+ onboarding · custom pricing · $1.50/GB extra storage',
     btnClass: 'price-btn-outline',
     btnText: 'Contact Us',
   },
@@ -96,9 +99,14 @@ export default function Pricing() {
                 <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--accent)', marginBottom: 4 }}>Pricing on request</div>
               )}
 
-              <div style={{ fontSize: 14, fontWeight: 700, color: t.enrolmentColor, marginBottom: 20 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: t.enrolmentColor, marginBottom: t.storageLabel ? 4 : 20 }}>
                 {t.enrolmentLabel}
               </div>
+              {t.storageLabel && (
+                <div style={{ fontSize: 13, fontWeight: 600, color: t.enrolmentColor, opacity: 0.8, marginBottom: 20 }}>
+                  {t.storageLabel}
+                </div>
+              )}
 
               <div className="price-divider" />
 
