@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import ScrollManager from './components/ScrollManager'
+import ChatWidget from './components/ui/ChatWidget'
 import HomePage from './pages/HomePage'
 import ManageLogin from './pages/ManageLogin'
 import ForgotPassword from './pages/ForgotPassword'
@@ -75,6 +76,7 @@ export default function App() {
         <Route path="/end-user-agreement" element={<EndUserAgreement />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
+      <ChatWidget />
     </BrowserRouter>
   )
 }
