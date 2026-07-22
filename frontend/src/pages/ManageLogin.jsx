@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Eye, EyeOff, Loader2, AlertCircle, GraduationCap, CheckCircle2, ShieldCheck, ArrowLeft } from 'lucide-react'
+import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, ShieldCheck, ArrowLeft } from 'lucide-react'
 import api from '../api/client'
+import LogoMark from '../components/ui/LogoMark'
 
 export default function ManageLogin() {
   const [searchParams] = useSearchParams()
@@ -154,7 +155,7 @@ export default function ManageLogin() {
               <img src={brand.logo_url} alt={brand.name} className="manage-brand-logo" />
             ) : (
               <div className="manage-login-icon" style={accentColor ? { background: accentColor } : undefined}>
-                <GraduationCap size={28} strokeWidth={1.8} />
+                <LogoMark size={30} />
               </div>
             )}
             <h2>{brand?.name || 'TrainTrack'}</h2>
@@ -360,7 +361,7 @@ export default function ManageLogin() {
 
           {brand && (
             <p className="manage-powered-by">
-              <GraduationCap size={12} /> Powered by TrainTrack
+              <LogoMark size={12} /> Powered by TrainTrack
             </p>
           )}
 
@@ -382,7 +383,7 @@ export default function ManageLogin() {
           {brand?.logo_url ? (
             <img src={brand.logo_url} alt="" className="manage-bg-logo-img" />
           ) : (
-            <GraduationCap size={320} strokeWidth={0.5} />
+            <LogoMark size={320} />
           )}
         </div>
       </div>

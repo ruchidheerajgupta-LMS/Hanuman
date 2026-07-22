@@ -785,7 +785,7 @@ footer {
 }
 .manage-login-icon {
   width: 64px; height: 64px;
-  background: linear-gradient(135deg, var(--teal), var(--blue));
+  background: #0B2A26;
   border-radius: var(--radius-lg);
   display: flex; align-items: center; justify-content: center;
   margin: 0 auto 16px;
