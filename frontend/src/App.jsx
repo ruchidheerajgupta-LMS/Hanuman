@@ -6,6 +6,7 @@ import ManageLogin from './pages/ManageLogin'
 import ForgotPassword from './pages/ForgotPassword'
 import EndUserAgreement from './pages/legal/EndUserAgreement'
 import PrivacyPolicy from './pages/legal/PrivacyPolicy'
+import Unsubscribe from './pages/Unsubscribe'
 
 // Product pages
 import StudentManagement from './pages/product/StudentManagement'
@@ -75,6 +76,7 @@ export default function App() {
         {/* Legal */}
         <Route path="/end-user-agreement" element={<EndUserAgreement />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/unsubscribe" element={<Unsubscribe />} />
       </Routes>
       <ChatWidget />
     </BrowserRouter>

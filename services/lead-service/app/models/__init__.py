@@ -90,3 +90,29 @@ class PageView(db.Model):
     ip_address = db.Column(db.String(45))
     session_id = db.Column(db.String(64))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class EmailOpen(db.Model):
+    """One row per load of the tracking pixel embedded in a cold-email's HTML
+    body — the practical stand-in for a "read receipt", since real
+    Disposition-Notification-To headers are ignored by nearly every modern
+    mail client for unsolicited email. A given email may open more than
+    once (forwarded, reopened, etc.) — every hit is logged, not deduped,
+    since re-opens are useful signal too.
+    """
+    __tablename__ = 'email_opens'
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), nullable=False)
+    campaign = db.Column(db.String(100), default='default')
+    user_agent = db.Column(db.Text)
+    ip_address = db.Column(db.String(45))
+    opened_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'campaign': self.campaign,
+            'opened_at': self.opened_at.isoformat() if self.opened_at else None,
+        }

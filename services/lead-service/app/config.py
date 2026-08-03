@@ -24,3 +24,8 @@ class Config:
     REDIS_URL = os.getenv('REDIS_URL', 'redis://redis:6379/0')
 
     CORS_ORIGINS = os.getenv('CORS_ORIGINS', '*').split(',')
+
+    # Shared secret for the GET /api/unsubscribed export, consumed by internal
+    # email-sending automation (not a public endpoint — it lists real people
+    # who opted out, so it isn't left open like /api/subscribe).
+    UNSUB_EXPORT_KEY = os.getenv('UNSUB_EXPORT_KEY', '')

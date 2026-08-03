@@ -74,6 +74,21 @@ CREATE TABLE IF NOT EXISTS page_views (
 CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path);
 CREATE INDEX IF NOT EXISTS idx_page_views_created ON page_views(created_at DESC);
 
+-- ─────────────────────────────────────────────────────────────────────────────
+-- EMAIL OPEN TRACKING (cold-email campaigns)
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS email_opens (
+  id         SERIAL PRIMARY KEY,
+  email      VARCHAR(255) NOT NULL,
+  campaign   VARCHAR(100) DEFAULT 'default',
+  user_agent TEXT,
+  ip_address VARCHAR(45),
+  opened_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_email_opens_email ON email_opens(email);
+CREATE INDEX IF NOT EXISTS idx_email_opens_campaign ON email_opens(campaign);
+
 -- =============================================================================
 -- VERIFICATION
 -- =============================================================================
@@ -83,4 +98,6 @@ SELECT 'contacts', COUNT(*) FROM contacts
 UNION ALL
 SELECT 'subscribers', COUNT(*) FROM subscribers
 UNION ALL
-SELECT 'page_views', COUNT(*) FROM page_views;
+SELECT 'page_views', COUNT(*) FROM page_views
+UNION ALL
+SELECT 'email_opens', COUNT(*) FROM email_opens;
