@@ -70,6 +70,10 @@ services:
       SMTP_FROM_NAME:     ${SMTP_FROM_NAME:-TrainTrack}
       SMTP_TLS:           ${SMTP_TLS:-true}
       SALES_NOTIFY_EMAIL: ${SALES_NOTIFY_EMAIL:-}
+      # Shared secret protecting /api/unsubscribed and /api/opens — the cold-email
+      # automation's key-protected exports. Must match the value the sending
+      # script is configured with.
+      UNSUB_EXPORT_KEY:   ${UNSUB_EXPORT_KEY:-}
     networks: [backend-net, data-net]
     depends_on:
       redis: { condition: service_healthy }
