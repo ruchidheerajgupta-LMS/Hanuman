@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, ShieldCheck, ArrowLeft } from 'lucide-react'
 import api from '../api/client'
 import LogoMark from '../components/ui/LogoMark'
+import Seo from '../components/layout/Seo'
 
 export default function ManageLogin() {
   const [searchParams] = useSearchParams()
@@ -147,6 +148,7 @@ export default function ManageLogin() {
 
   return (
     <div>
+      <Seo title="Sign In" path="/manage" noindex />
       <div className="manage-login-page" style={accentColor ? { background: `linear-gradient(135deg, ${accentColor} 0%, ${accentColor}dd 100%)` } : undefined}>
         <div className="manage-login-card">
           {/* Logo header */}

@@ -5,14 +5,14 @@ export default function LearningManagement() {
   const features = [
     { icon: '📚', bg: 'var(--teal-light)', title: 'Course Builder', desc: 'Drag-and-drop course creation aligned to training.gov.au packages. Map units, clusters, and delivery sequences visually.' },
     { icon: '📝', bg: 'var(--blue-light)', title: 'Online Assessments', desc: 'Create knowledge quizzes, upload practical assessments, and set due dates with automatic reminders.' },
-    { icon: '🤖', bg: 'var(--amber-light)', title: 'AI-Powered Feedback', desc: 'Leverage AI grading to provide instant, detailed feedback on written submissions — saving trainers hours per week.' },
+    { icon: '⚡', bg: 'var(--amber-light)', title: 'Instant Auto-Marking', desc: 'Multiple-choice, fill-in-the-blank, and matching questions mark themselves the moment a student submits — no waiting on a trainer.' },
     { icon: '📈', bg: 'var(--coral-light)', title: 'Competency Tracking', desc: 'Map assessment results to unit competency outcomes. Instantly see who is Competent, Not Yet Competent, or in progress.' },
     { icon: '💬', bg: 'var(--teal-light)', title: 'Discussion Forums', desc: 'Built-in per-course forums for peer collaboration, trainer Q&A, and evidence of participation for audits.' },
     { icon: '📱', bg: 'var(--blue-light)', title: 'Mobile-First Design', desc: 'Students access courses, submit assessments, and check results on any device — no app download required.' },
   ]
 
   return (
-    <PageLayout title="Learning Management (LMS)" breadcrumb="Learning Management">
+    <PageLayout title="Learning Management (LMS)" breadcrumb="Learning Management" description="Cloud-based Learning Management System (LMS) for Australian RTOs — course builder, online assessments, auto-marking, and mobile access.">
       <div className="page-content">
         <span className="page-tag page-tag-teal">CORE MODULE</span>
         <h2>Deliver training that's engaging, trackable, and compliant</h2>

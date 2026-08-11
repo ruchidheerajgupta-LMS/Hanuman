@@ -1,11 +1,13 @@
 import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
+import Seo from './Seo'
 import useScrollAnimation from '../../hooks/useScrollAnimation'
 
-export default function PageLayout({ children, title, breadcrumb }) {
+export default function PageLayout({ children, title, breadcrumb, description, noindex }) {
   const ref = useScrollAnimation()
+  const { pathname } = useLocation()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -13,6 +15,7 @@ export default function PageLayout({ children, title, breadcrumb }) {
 
   return (
     <div ref={ref}>
+      <Seo title={title} description={description} path={pathname} noindex={noindex} />
       <Navbar />
       <div className="page-hero">
         <div className="page-hero-bg" />

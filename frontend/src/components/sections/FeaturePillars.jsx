@@ -32,7 +32,7 @@ const PILLARS = [
     title: 'Operational Efficiency',
     desc: 'Train faster. Certify smarter. Stop doing manually what software should handle.',
     items: [
-      'AI-assisted assessment grading with audit trail',
+      'Instant auto-marking for multiple-choice, fill-in-the-blank, and matching questions',
       'Branded PDF certificates auto-issued on competency',
       'Automated notifications — graded, enrolled, attendance alerts',
       'Cohort broadcast: email + SMS to whole intake in one click',

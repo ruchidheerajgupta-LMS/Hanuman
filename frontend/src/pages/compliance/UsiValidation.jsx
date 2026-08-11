@@ -10,7 +10,7 @@ export default function UsiValidation() {
   ]
 
   return (
-    <PageLayout title="USI Validation" breadcrumb="USI Validation">
+    <PageLayout title="USI Validation" breadcrumb="USI Validation" description="Automatic USI (Unique Student Identifier) validation for Australian RTOs — verify student USIs instantly and avoid AVETMISS rejections.">
       <div className="page-content">
         <span className="page-tag page-tag-blue">COMPLIANCE GUIDE</span>
         <h2>USI validation — what RTOs need to know</h2>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://traintrack.work/</loc><priority>1.0</priority></url>
+
+  <url><loc>https://traintrack.work/product/student-management</loc><priority>0.8</priority></url>
+  <url><loc>https://traintrack.work/product/learning-management</loc><priority>0.8</priority></url>
+  <url><loc>https://traintrack.work/product/compliance-tools</loc><priority>0.8</priority></url>
+  <url><loc>https://traintrack.work/product/online-enrolment</loc><priority>0.8</priority></url>
+  <url><loc>https://traintrack.work/product/avetmiss-reporting</loc><priority>0.8</priority></url>
+  <url><loc>https://traintrack.work/product/ai-grading</loc><priority>0.8</priority></url>
+  <url><loc>https://traintrack.work/product/certificates-qr</loc><priority>0.8</priority></url>
+
+  <url><loc>https://traintrack.work/compliance/standards-rto-2025</loc><priority>0.7</priority></url>
+  <url><loc>https://traintrack.work/compliance/avetmiss-8-guide</loc><priority>0.7</priority></url>
+  <url><loc>https://traintrack.work/compliance/usi-validation</loc><priority>0.7</priority></url>
+  <url><loc>https://traintrack.work/compliance/asqa-audit-checklist</loc><priority>0.7</priority></url>
+  <url><loc>https://traintrack.work/compliance/trainer-currency</loc><priority>0.7</priority></url>
+  <url><loc>https://traintrack.work/compliance/scope-management</loc><priority>0.7</priority></url>
+
+  <url><loc>https://traintrack.work/company/about</loc><priority>0.6</priority></url>
+  <url><loc>https://traintrack.work/company/vs-cloud-assess</loc><priority>0.6</priority></url>
+  <url><loc>https://traintrack.work/company/vs-eskilled</loc><priority>0.6</priority></url>
+  <url><loc>https://traintrack.work/company/pricing</loc><priority>0.9</priority></url>
+  <url><loc>https://traintrack.work/company/blog</loc><priority>0.6</priority></url>
+  <url><loc>https://traintrack.work/company/contact</loc><priority>0.6</priority></url>
+
+  <url><loc>https://traintrack.work/end-user-agreement</loc><priority>0.3</priority></url>
+  <url><loc>https://traintrack.work/privacy-policy</loc><priority>0.3</priority></url>
+</urlset>

@@ -61,7 +61,7 @@ export default function AsqaAuditChecklist() {
   ]
 
   return (
-    <PageLayout title="ASQA Audit Checklist" breadcrumb="ASQA Audit Checklist">
+    <PageLayout title="ASQA Audit Checklist" breadcrumb="ASQA Audit Checklist" description="Prepare for your ASQA audit with this practical checklist — what to expect, what to prepare, and how TrainTrack keeps you audit-ready.">
       <div className="page-content">
         <span className="page-tag page-tag-blue">COMPLIANCE GUIDE</span>
         <h2>The ultimate ASQA audit preparation checklist</h2>

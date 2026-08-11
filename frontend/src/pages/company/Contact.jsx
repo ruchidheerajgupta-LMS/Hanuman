@@ -81,7 +81,7 @@ export default function Contact() {
   }
 
   return (
-    <PageLayout title="Contact Us" breadcrumb="Contact">
+    <PageLayout title="Contact Us" breadcrumb="Contact" description="Get in touch with TrainTrack — book a demo, ask a question, or talk to our Australian support team about RTO compliance software.">
       <div className="page-feature-grid" style={{ marginBottom: '2rem' }}>
         <div className="page-content">
           <h2>Get in touch</h2>

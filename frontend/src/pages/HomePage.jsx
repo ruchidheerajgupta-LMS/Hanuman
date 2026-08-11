@@ -1,6 +1,8 @@
 import useScrollAnimation from '../hooks/useScrollAnimation'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
+import Seo from '../components/layout/Seo'
+import OrganizationSchema from '../components/layout/OrganizationSchema'
 import Hero from '../components/sections/Hero'
 import ProofBar from '../components/sections/ProofBar'
 import ProblemSection from '../components/sections/ProblemSection'
@@ -18,6 +20,13 @@ export default function HomePage() {
 
   return (
     <div ref={ref}>
+      <Seo
+        title="TrainTrack — Australia's RTO Management System"
+        description="TrainTrack merges your SMS and LMS into one ASQA-aligned platform. AVETMISS exports in two clicks. USI validated automatically. Built for Australian RTOs."
+        path="/"
+        rawTitle
+      />
+      <OrganizationSchema />
       <Navbar />
       <Hero />
       <ProofBar />

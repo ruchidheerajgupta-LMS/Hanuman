@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Loader2, AlertCircle, GraduationCap, KeyRound, Copy, Check } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
+import Seo from '../components/layout/Seo'
 import api from '../api/client'
 
 export default function ForgotPassword() {
@@ -34,6 +35,7 @@ export default function ForgotPassword() {
 
   return (
     <div>
+      <Seo title="Forgot Password" path="/forgot-password" noindex />
       <Navbar />
 
       <div className="manage-login-page">

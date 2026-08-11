@@ -12,7 +12,7 @@ export default function StudentManagement() {
   ]
 
   return (
-    <PageLayout title="Student Management (SMS)" breadcrumb="Student Management">
+    <PageLayout title="Student Management (SMS)" breadcrumb="Student Management" description="Cloud-based Student Management System (SMS) for Australian RTOs — enrolments, attendance, USI verification, and AVETMISS in one platform.">
       <div className="page-content">
         <span className="page-tag page-tag-teal">CORE MODULE</span>
         <h2>Everything about your learners — in one place</h2>

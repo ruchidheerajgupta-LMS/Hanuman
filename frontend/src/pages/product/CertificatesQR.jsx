@@ -17,7 +17,7 @@ export default function CertificatesQR() {
   ]
 
   return (
-    <PageLayout title="Certificates + QR" breadcrumb="Certificates + QR">
+    <PageLayout title="Certificates + QR" breadcrumb="Certificates + QR" description="Auto-generated, QR-verified digital certificates for Australian RTOs — employers verify authenticity in seconds.">
       <div className="page-content">
         <span className="page-tag page-tag-teal">CORE MODULE</span>
         <h2>Issue verifiable certificates in seconds</h2>

@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom'
 import LogoMark from '../components/ui/LogoMark'
+import Seo from '../components/layout/Seo'
 
 export default function PitchDeck() {
   const navigate = useNavigate()
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#000' }}>
+      <Seo title="Product Overview" path="/pitch-deck" noindex />
       {/* Thin header bar */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',

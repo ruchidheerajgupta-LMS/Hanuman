@@ -21,7 +21,7 @@ export default function TrainerCurrency() {
   ]
 
   return (
-    <PageLayout title="Trainer Currency" breadcrumb="Trainer Currency">
+    <PageLayout title="Trainer Currency" breadcrumb="Trainer Currency" description="Track trainer currency, qualifications, and industry currency evidence automatically — stay audit-ready for ASQA under the Standards for RTOs.">
       <div className="page-content">
         <span className="page-tag page-tag-blue">COMPLIANCE GUIDE</span>
         <h2>Trainer and assessor currency — a practical guide</h2>

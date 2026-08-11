@@ -12,8 +12,8 @@ export default function Blog() {
     },
     {
       tag: 'Product', tagClass: 'page-tag-teal',
-      title: 'How AI Grading Is Saving Trainers 10+ Hours Per Week',
-      excerpt: 'We studied trainers using TrainTrack\'s AI grading across 3,000 written assessments. The results: 85% faster feedback delivery with 95% alignment to human-graded outcomes.',
+      title: 'Cutting Assessment Turnaround With Smart Marking',
+      excerpt: 'Uploading an existing Word or PDF assessment and auto-marking objective question types removes a big chunk of repetitive admin — here\'s how it fits into your existing marking workflow.',
       date: 'March 2026',
       link: '/product/ai-grading',
     },
@@ -48,7 +48,7 @@ export default function Blog() {
   ]
 
   return (
-    <PageLayout title="Blog" breadcrumb="Blog">
+    <PageLayout title="Blog" breadcrumb="Blog" description="Practical guides, compliance updates, and product news for Australian RTOs — AVETMISS, ASQA audits, trainer currency, and more.">
       <div className="page-content">
         <h2>Insights for Australian RTOs</h2>
         <p>Practical guides, compliance updates, and product news from the TrainTrack team. Written by people who understand VET.</p>

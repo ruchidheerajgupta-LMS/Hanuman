@@ -3,7 +3,7 @@ import PageLayout from '../../components/layout/PageLayout'
 
 export default function PrivacyPolicy() {
   return (
-    <PageLayout title="Privacy Policy" breadcrumb="Privacy Policy">
+    <PageLayout title="Privacy Policy" breadcrumb="Privacy Policy" description="TrainTrack's privacy policy — how we collect, use, and protect your data as an Australian RTO software provider.">
       <div className="page-content legal-page">
         <p className="legal-effective">Effective Date: 1 January 2026</p>
 

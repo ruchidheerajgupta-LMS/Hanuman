@@ -12,7 +12,7 @@ export default function ComplianceTools() {
   ]
 
   return (
-    <PageLayout title="Compliance Tools" breadcrumb="Compliance Tools">
+    <PageLayout title="Compliance Tools" breadcrumb="Compliance Tools" description="Compliance dashboards, complaints handling, continuous improvement, and RPL tools built around the Standards for RTOs — for Australian RTOs.">
       <div className="page-content">
         <span className="page-tag page-tag-blue">COMPLIANCE</span>
         <h2>Stay audit-ready every single day</h2>

@@ -15,7 +15,7 @@ export default function AvetmissReporting() {
   ]
 
   return (
-    <PageLayout title="AVETMISS Reporting" breadcrumb="AVETMISS Reporting">
+    <PageLayout title="AVETMISS Reporting" breadcrumb="AVETMISS Reporting" description="One-click AVETMISS reporting and NCVER submission for Australian RTOs — validated exports, fewer errors, faster compliance.">
       <div className="page-content">
         <span className="page-tag page-tag-blue">REPORTING</span>
         <h2>AVETMISS exports in two clicks — not two days</h2>

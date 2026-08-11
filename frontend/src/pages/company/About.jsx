@@ -17,7 +17,7 @@ export default function About() {
   ]
 
   return (
-    <PageLayout title="About TrainTrack" breadcrumb="About">
+    <PageLayout title="About TrainTrack" breadcrumb="About" description="Meet the team behind TrainTrack, the Australian-built RTO management system merging SMS and LMS into one ASQA-aligned platform.">
       <div className="page-content">
         <h2>The RTO management platform built by people who get VET</h2>
         <p>TrainTrack was founded by former RTO operators and compliance managers who were frustrated by the gap between what generic SaaS platforms offered and what Australian RTOs actually needed.</p>

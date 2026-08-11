@@ -40,9 +40,9 @@ const FEATURES = [
     desc: 'Trainers are notified when work is submitted; students are notified when it\'s graded — with their outcome. New enrolments trigger welcome emails. Low attendance triggers a warning to student and admin at 80%. Cohort broadcasts (email + SMS) reach a whole intake in one click.',
   },
   {
-    pain: 'Pain: Hours marking written assessments from scratch',
-    title: 'AI-Assisted Grading',
-    desc: "AI surfaces suggested grades and key evidence points from student responses, benchmarked against your marking guide. Trainers review and confirm — they don't start from scratch. Every decision is logged for the audit trail.",
+    pain: 'Pain: Hours spent marking multiple-choice and fill-in-the-blank questions by hand',
+    title: 'Instant Auto-Marking',
+    desc: "Multiple-choice, fill-in-the-blank, and matching questions mark themselves the second a student submits. Upload an existing Word or PDF assessment and TrainTrack extracts the questions for you — no re-typing. Written and practical responses still go to a qualified assessor, exactly as ASQA requires.",
   },
   {
     pain: 'Pain: Certificates issued weeks after competency is achieved',

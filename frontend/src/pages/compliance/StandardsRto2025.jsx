@@ -11,7 +11,7 @@ export default function StandardsRto2025() {
   ]
 
   return (
-    <PageLayout title="Standards for RTOs 2025" breadcrumb="Standards for RTOs 2025">
+    <PageLayout title="Standards for RTOs 2025" breadcrumb="Standards for RTOs 2025" description="What the Standards for RTOs 2025 change and why it matters — governance, outcome-focused compliance, and student protections explained.">
       <div className="page-content">
         <span className="page-tag page-tag-blue">COMPLIANCE GUIDE</span>
         <h2>Your complete guide to the updated Standards for RTOs 2025</h2>

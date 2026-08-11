@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import PageLayout from '../../components/layout/PageLayout'
 
-// Set to true when pricing is ready to publish
-const SHOW_PRICING = false
+// Pricing is quoted directly in outbound campaigns, so it stays visible here too.
+const SHOW_PRICING = true
 
 const TIERS = [
   {
@@ -24,7 +25,7 @@ const TIERS = [
     note: 'Pay only for students you teach. Scales automatically.',
     features: [
       'Everything in Compliance Core',
-      'AI-assisted assessment grading',
+      'Smart assessment import from Word/PDF',
       'Audit evidence pack generator',
       'Xero / MYOB financial sync',
       'Training.gov.au scope sync',
@@ -59,9 +60,22 @@ const FAQ = [
   { q: 'How do I get pricing?', a: 'Pricing is tailored to your RTO\'s size and delivery model. Get in touch and we\'ll put together a proposal within one business day.' },
 ]
 
+const FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+}
+
 export default function PricingPage() {
   return (
-    <PageLayout title="Pricing" breadcrumb="Pricing">
+    <PageLayout title="Pricing" breadcrumb="Pricing" description="TrainTrack pricing — plans start at $299/month. Pay-as-you-enrol options available. No lock-in contracts. Built for Australian RTOs.">
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(FAQ_SCHEMA)}</script>
+      </Helmet>
       <div className="page-content">
         <h2>Fair-go pricing for every RTO</h2>
         <p>No per-seat fees. No surprise overages. No 12-month lock-in on the starter plan. <Link to="/contact" style={{ color: 'var(--teal-mid)' }}>Contact us</Link> for pricing tailored to your RTO's size and needs.</p>

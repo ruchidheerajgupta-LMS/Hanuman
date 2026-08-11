@@ -23,7 +23,7 @@ export default function Unsubscribe() {
   }
 
   return (
-    <PageLayout title="Unsubscribe" breadcrumb="Unsubscribe">
+    <PageLayout title="Unsubscribe" breadcrumb="Unsubscribe" description="Unsubscribe from TrainTrack email updates." noindex>
       <div className="page-content" style={{ maxWidth: 520, margin: '0 auto', textAlign: 'center' }}>
         {!email ? (
           <p>No email address was provided in the link. Please use the unsubscribe link from the email you received.</p>

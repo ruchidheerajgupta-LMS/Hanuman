@@ -3,7 +3,7 @@ import PageLayout from '../../components/layout/PageLayout'
 
 export default function EndUserAgreement() {
   return (
-    <PageLayout title="End User Agreement" breadcrumb="End User Agreement">
+    <PageLayout title="End User Agreement" breadcrumb="End User Agreement" description="TrainTrack's end user agreement — terms and conditions for using our RTO management platform.">
       <div className="page-content legal-page">
         <p className="legal-effective">Effective Date: 1 January 2026</p>
 

@@ -10,7 +10,7 @@ export default function ScopeManagement() {
   ]
 
   return (
-    <PageLayout title="Scope Management" breadcrumb="Scope Management">
+    <PageLayout title="Scope Management" breadcrumb="Scope Management" description="Manage your RTO's scope of registration with live training.gov.au sync — track qualifications, units, and delivery locations in one place.">
       <div className="page-content">
         <span className="page-tag page-tag-blue">COMPLIANCE GUIDE</span>
         <h2>Managing your RTO scope of registration</h2>

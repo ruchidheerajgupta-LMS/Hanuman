@@ -6,7 +6,6 @@ export default function VsEskilled() {
     { feature: 'SMS + LMS unified platform', tt: '✓', es: '✗ Separate systems' },
     { feature: 'Pay-as-you-enrol pricing', tt: '✓', es: 'Flat annual rate' },
     { feature: 'AVETMISS pre-submission validation', tt: '✓', es: '✓' },
-    { feature: 'AI-assisted assessment grading', tt: '✓', es: '✗ Not available' },
     { feature: 'Trainer currency automation', tt: '✓', es: 'Manual tracking' },
     { feature: 'training.gov.au scope sync (live API)', tt: '✓', es: '✗ Not available' },
     { feature: 'Auto certificate + QR verification', tt: '✓', es: 'Partial' },
@@ -17,7 +16,7 @@ export default function VsEskilled() {
   ]
 
   return (
-    <PageLayout title="TrainTrack vs eSkilled" breadcrumb="vs eSkilled">
+    <PageLayout title="TrainTrack vs eSkilled" breadcrumb="vs eSkilled" description="Compare TrainTrack vs eSkilled — unified SMS/LMS, pay-as-you-enrol pricing, and AVETMISS validation for Australian RTOs.">
       <div className="page-content">
         <span className="page-tag page-tag-blue">COMPARISON</span>
         <h2>TrainTrack vs eSkilled — an honest comparison</h2>
@@ -61,7 +60,7 @@ export default function VsEskilled() {
         <h3>Where TrainTrack leads</h3>
         <ul>
           <li><strong>Unified platform</strong> — SMS + LMS + compliance in one database. No separate systems to maintain.</li>
-          <li><strong>AI grading</strong> — Automated feedback on written assessments, not just multiple-choice auto-marking.</li>
+          <li><strong>Smart assessment import</strong> — upload an existing Word or PDF and TrainTrack extracts the questions for you, with instant auto-marking for objective question types.</li>
           <li><strong>Fair pricing</strong> — Pay-as-you-enrol model means you only pay for active students. No annual lock-in.</li>
           <li><strong>Compliance tools</strong> — Self-audit checklists, evidence repository, trainer currency tracking, and risk register — all built in.</li>
           <li><strong>Certificate + QR verification</strong> — Automated certificate generation with employer-facing QR verification.</li>

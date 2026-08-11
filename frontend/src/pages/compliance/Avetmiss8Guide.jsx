@@ -16,7 +16,7 @@ export default function Avetmiss8Guide() {
   ]
 
   return (
-    <PageLayout title="AVETMISS 8 Guide" breadcrumb="AVETMISS 8 Guide">
+    <PageLayout title="AVETMISS 8 Guide" breadcrumb="AVETMISS 8 Guide" description="A complete guide to AVETMISS 8 — common validation errors, NCVER submission requirements, and how TrainTrack automates compliant exports.">
       <div className="page-content">
         <span className="page-tag page-tag-blue">COMPLIANCE GUIDE</span>
         <h2>The practical RTO guide to AVETMISS Release 8</h2>

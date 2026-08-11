@@ -6,7 +6,6 @@ export default function VsCloudAssess() {
     { feature: 'SMS + LMS unified platform', tt: '✓', ca: '✗ Separate systems' },
     { feature: 'Pay-as-you-enrol pricing', tt: '✓', ca: 'Flat annual rate' },
     { feature: 'AVETMISS pre-submission validation', tt: '✓', ca: 'Partial' },
-    { feature: 'AI-assisted assessment grading', tt: '✓', ca: '✗ Not available' },
     { feature: 'Trainer currency automation', tt: '✓', ca: 'Manual tracking' },
     { feature: 'training.gov.au scope sync (live API)', tt: '✓', ca: '✗ Not available' },
     { feature: 'Auto certificate + QR verification', tt: '✓', ca: 'Manual trigger' },
@@ -17,7 +16,7 @@ export default function VsCloudAssess() {
   ]
 
   return (
-    <PageLayout title="TrainTrack vs Cloud Assess" breadcrumb="vs Cloud Assess">
+    <PageLayout title="TrainTrack vs Cloud Assess" breadcrumb="vs Cloud Assess" description="Compare TrainTrack vs Cloud Assess — unified SMS/LMS, pay-as-you-enrol pricing, and AVETMISS validation for Australian RTOs.">
       <div className="page-content">
         <span className="page-tag page-tag-blue">COMPARISON</span>
         <h2>TrainTrack vs Cloud Assess — an honest comparison</h2>
@@ -61,7 +60,7 @@ export default function VsCloudAssess() {
         <h3>Where TrainTrack leads</h3>
         <ul>
           <li><strong>Unified platform</strong> — SMS + LMS + compliance in one database. No integrations, no data silos, no double entry.</li>
-          <li><strong>AI grading</strong> — Save trainers hours per week with AI-assisted written assessment evaluation.</li>
+          <li><strong>Smart assessment import</strong> — upload an existing Word or PDF and TrainTrack extracts the questions for you, with instant auto-marking for objective question types.</li>
           <li><strong>Fair pricing</strong> — Pay per enrolment, not a flat annual fee. No lock-in contracts.</li>
           <li><strong>Compliance-first design</strong> — Built-in AVETMISS validation, trainer currency tracking, and audit evidence packs.</li>
           <li><strong>Australian support</strong> — Real phone support from people who understand VET. Not just a ticket queue.</li>

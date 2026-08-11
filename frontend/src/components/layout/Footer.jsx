@@ -25,7 +25,7 @@ export default function Footer() {
             <Link to="/product/compliance-tools" className="footer-link">Compliance Tools</Link>
             <Link to="/product/online-enrolment" className="footer-link">Online Enrolment</Link>
             <Link to="/product/avetmiss-reporting" className="footer-link">AVETMISS Reporting</Link>
-            <Link to="/product/ai-grading" className="footer-link">AI Grading</Link>
+            <Link to="/product/ai-grading" className="footer-link">Smart Assessment Marking</Link>
             <Link to="/product/certificates-qr" className="footer-link">Certificates + QR</Link>
           </div>
           <div>

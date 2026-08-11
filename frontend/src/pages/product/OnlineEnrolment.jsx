@@ -17,7 +17,7 @@ export default function OnlineEnrolment() {
   ]
 
   return (
-    <PageLayout title="Online Enrolment" breadcrumb="Online Enrolment">
+    <PageLayout title="Online Enrolment" breadcrumb="Online Enrolment" description="Digital online enrolment for Australian RTOs — capture, validate, and process student enrolments without the paperwork.">
       <div className="page-content">
         <span className="page-tag page-tag-teal">CORE MODULE</span>
         <h2>From enquiry to enrolled — in minutes, not days</h2>

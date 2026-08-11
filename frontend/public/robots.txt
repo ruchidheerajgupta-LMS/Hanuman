@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /manage
+Disallow: /forgot-password
+Disallow: /unsubscribe
+Disallow: /pitch-deck
+
+Sitemap: https://traintrack.work/sitemap.xml
