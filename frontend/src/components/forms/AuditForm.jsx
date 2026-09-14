@@ -30,6 +30,9 @@ export default function AuditForm() {
     try {
       await api.post('/leads/audit-booking', form)
       setStatus('success')
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'generate_lead', { method: 'audit_booking_form' })
+      }
     } catch (err) {
       const data = err.response?.data
       setErrors(data?.errors || [data?.error || 'Something went wrong. Please try again.'])
