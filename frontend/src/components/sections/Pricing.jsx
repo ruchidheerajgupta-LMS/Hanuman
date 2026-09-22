@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 
-// Set to true when pricing is ready to publish
-const SHOW_PRICING = false
+// Matches the pitch-deck's slide 10 pricing exactly.
+const SHOW_PRICING = true
 
 const TIERS = [
   {
