@@ -5,59 +5,59 @@ import PageLayout from '../../components/layout/PageLayout'
 // Pricing is quoted directly in outbound campaigns, so it stays visible here too.
 const SHOW_PRICING = true
 
+// Kept in sync with components/sections/Pricing.jsx (homepage) and the
+// pitch deck's slide 10 -- same tiers, numbers, and feature lists everywhere
+// on the site, not just here.
 const TIERS = [
   {
-    name: 'Compliance Core', dollar: '$299', period: '/ month',
-    note: 'Up to 100 active enrolments. No lock-in contract.',
+    name: 'Starter', dollar: '$299', period: '/ month',
+    note: 'Up to 50 active enrolments. 10 GB document storage included.',
     features: [
-      'Full SMS + LMS, unified database',
-      'AVETMISS 8 export with validation',
-      'USI collection and status tracking',
-      'Trainer currency tracking',
-      'Digital certificates + QR codes',
-      'Branded online enrolment engine',
-      'Australian email support',
-      '10 GB document storage included',
+      'Student management',
+      'Assessment builder',
+      'Attendance tracking',
+      'AVETMISS export',
+      'Basic analytics',
     ],
+    excluded: ['RPL workflow'],
+    pricingNote: '$1,000 onboarding · $3.50/extra enrolment · $2.50/GB extra storage',
   },
   {
-    name: 'Growth', dollar: '$149', period: '/ month base', featured: true,
-    note: 'Pay only for students you teach. Scales automatically.',
+    name: 'Professional', dollar: '$699', period: '/ month', featured: true,
+    note: 'Up to 100 active enrolments. 25 GB document storage included.',
     features: [
-      'Everything in Compliance Core',
-      'Smart assessment import from Word/PDF',
-      'Audit evidence pack generator',
-      'Xero / MYOB financial sync',
-      'Training.gov.au scope sync',
-      'Stripe payment processing',
-      'Priority phone + video support (AEST)',
-      '25 GB document storage included',
+      'Everything in Starter',
+      'RPL workflow',
+      'Advanced analytics',
+      'Team Lead role',
+      'CSV bulk import',
+      'Priority support',
     ],
+    pricingNote: '$2,000 onboarding · $2.50/extra enrolment · $2.00/GB extra storage',
   },
   {
-    name: 'Enterprise', dollar: 'Custom', period: '',
-    note: 'For RTOs with 500+ enrolments, multi-site delivery, or government funding streams.',
+    name: 'Enterprise', dollar: '$999', dollarSuffix: '+', period: '/ month',
+    note: 'Unlimited enrolments. 100 GB document storage included.',
     features: [
-      'Everything in Growth',
-      'Dedicated account manager (ex-RTO)',
-      'Custom AVETMISS state variations',
-      'SSO + Active Directory integration',
-      'White-label learner portal',
-      'AU-hosted data sovereignty guaranteed',
-      'SLA-backed 99.9% uptime',
-      '100 GB document storage included',
+      'Everything in Professional',
+      'Dedicated onboarding',
+      'Custom integrations',
+      'SLA & 24/7 support',
+      'White-label options',
+      'Multi-campus support',
     ],
+    pricingNote: '$3,000+ onboarding · custom pricing · $1.50/GB extra storage',
   },
 ]
 
 const FAQ = [
-  { q: 'Is there a free trial?', a: 'Yes! The Growth plan comes with a free 30-day trial. No credit card required. Full access to all features.' },
   { q: 'What counts as an "active enrolment"?', a: 'Any student with at least one unit enrolment in a non-completed, non-withdrawn status during the billing period.' },
+  { q: 'What happens if I go over my plan\'s enrolment cap?', a: 'You\'re not cut off — extra enrolments are billed per-student at your plan\'s overage rate (shown under each plan above), so there\'s no hard wall stopping you from enrolling students.' },
   { q: 'Can I switch plans?', a: 'Absolutely. Upgrade or downgrade at any time. Changes take effect at the start of your next billing cycle.' },
-  { q: 'Is there a setup fee?', a: 'No setup fee for Compliance Core or Growth plans. Enterprise includes white-glove onboarding and data migration.' },
-  { q: 'What about data migration?', a: 'We provide free CSV import tools for all plans. Enterprise customers get assisted migration with dedicated support.' },
+  { q: 'Is there a setup fee?', a: 'Yes — a one-off onboarding fee applies on every plan (shown under each plan above), covering data migration and initial setup. It scales with plan tier.' },
+  { q: 'What about data migration?', a: 'CSV bulk import is included from the Professional plan up. Enterprise customers get assisted migration with dedicated support as part of onboarding.' },
   { q: 'Where is my data hosted?', a: 'All data is hosted in Australia on ISO 27001 certified infrastructure. Data never leaves the country.' },
-  { q: 'How do I get pricing?', a: 'Pricing is tailored to your RTO\'s size and delivery model. Get in touch and we\'ll put together a proposal within one business day.' },
+  { q: 'Is there a free trial?', a: 'Not currently — but you can book a free 15-minute compliance audit to see the platform reviewed against your own RTO\'s setup before committing to anything.' },
 ]
 
 const FAQ_SCHEMA = {
@@ -72,13 +72,13 @@ const FAQ_SCHEMA = {
 
 export default function PricingPage() {
   return (
-    <PageLayout title="Pricing" breadcrumb="Pricing" description="TrainTrack pricing — plans start at $299/month. Pay-as-you-enrol options available. No lock-in contracts. Built for Australian RTOs.">
+    <PageLayout title="Pricing" breadcrumb="Pricing" description="TrainTrack pricing — Starter $299/month, Professional $699/month, Enterprise from $999/month. No lock-in contracts. Built for Australian RTOs.">
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(FAQ_SCHEMA)}</script>
       </Helmet>
       <div className="page-content">
         <h2>Fair-go pricing for every RTO</h2>
-        <p>No per-seat fees. No surprise overages. No 12-month lock-in on the starter plan. <Link to="/contact" style={{ color: 'var(--teal-mid)' }}>Contact us</Link> for pricing tailored to your RTO's size and needs.</p>
+        <p>No lock-in contracts. All plans include onboarding, support, and Australian data hosting. <Link to="/contact" style={{ color: 'var(--teal-mid)' }}>Contact us</Link> if you're not sure which plan fits.</p>
       </div>
 
       <div className="page-feature-grid page-three-grid" style={{ marginTop: '2rem' }}>
@@ -89,6 +89,7 @@ export default function PricingPage() {
             {SHOW_PRICING && (
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 8 }}>
                 <span style={{ fontSize: 36, fontWeight: 700, color: 'var(--navy)', fontFamily: 'var(--font-display)' }}>{t.dollar}</span>
+                {t.dollarSuffix && <span style={{ fontSize: 20, fontWeight: 700, color: 'var(--navy)' }}>{t.dollarSuffix}</span>}
                 {t.period && <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{t.period}</span>}
               </div>
             )}
@@ -103,9 +104,18 @@ export default function PricingPage() {
                   <span>{f}</span>
                 </div>
               ))}
+              {t.excluded?.map((f, fi) => (
+                <div key={fi} style={{ display: 'flex', gap: 8, marginBottom: 8, fontSize: 13, opacity: 0.4 }}>
+                  <span style={{ fontWeight: 700 }}>✕</span>
+                  <span>{f}</span>
+                </div>
+              ))}
             </div>
+            {SHOW_PRICING && t.pricingNote && (
+              <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 16, marginBottom: 0 }}>{t.pricingNote}</p>
+            )}
             <Link to={`/company/contact?plan=${encodeURIComponent(t.name)}`} className="btn-primary" style={{ display: 'block', textAlign: 'center', marginTop: 20 }}>
-              {t.featured ? 'Start Free Trial' : 'Get Started'}
+              {t.name === 'Enterprise' ? 'Contact Us' : 'Get Started'}
             </Link>
           </div>
         ))}
